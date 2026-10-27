@@ -1,3 +1,33 @@
+# Fork Overview
+
+This fork is based on [LLVM 23.1.4](https://github.com/llvm/llvm-project/releases/tag/llvmorg-23.1.4).
+
+> [!CAUTION]
+> **MICROSOFT ABI CHANGED. REBUILD REQUIRED.**
+
+The `23.1.4` branch contains these changes:
+
+- **⚠️Microsoft ABI**: nested empty-subobject layouts, `msvc::no_unique_address`, and `empty_bases` inheritance.
+- Windows DLL builds: API exports, PCH reuse, vtable emission, and shared LLVM linkage for `llvm-exegesis`.
+- Windows toolchains: MSVC sysroot support from [PR #96417](https://github.com/llvm/llvm-project/pull/96417), with legacy `msstl` compatibility.
+- Windows runtimes: libc++ new-handler support without MSVC STL linkage, CRT-dependent header visibility, compiler-rt header and TLS fixes, and PDB installation.
+- Mach-O split LTO: weak alias linkage and flags from [PR #219534](https://github.com/llvm/llvm-project/pull/219534), with ARM64 and x86_64 regression tests.
+- Runtime optimization: optional whole-program vtables for runtime LTO sources, with consistent C and C++ split-unit settings.
+
+- Runtime builds: resolve compiler-rt builtins from in-tree targets before searching the installed toolchain.
+- ARM builtins: avoid duplicate reverse-subtraction symbols ([PR #230739](https://github.com/llvm/llvm-project/pull/230739)).
+- libc++ CFI: suppress checks for a valid cast in `assume_aligned` ([PR #220296](https://github.com/llvm/llvm-project/pull/220296)).
+- libc++ shared arrays: detect allocation-size overflow in `make_shared<T[]>` and `allocate_shared<T[]>` ([PR #223735](https://github.com/llvm/llvm-project/pull/223735)).
+
+The runtime backports come from the
+[Android toolchain patch set](https://android.googlesource.com/toolchain/llvm_android/+/a309e8d8406000c78e46520a104c4cf5a098d223/patches/PATCHES.json).
+The `[ndk]` commit prefix records the patch source.
+
+To build the Android runtimes, use the [`23.1.4-android` branch](https://github.com/TomatoPuddin/llvm-project/tree/23.1.4-android).
+
+
+---
+
 # The LLVM Compiler Infrastructure
 
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/llvm/llvm-project/badge)](https://securityscorecards.dev/viewer/?uri=github.com/llvm/llvm-project)
