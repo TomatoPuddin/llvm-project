@@ -20,7 +20,13 @@
 #cmakedefine01 _LIBCPP_HAS_THREAD_API_EXTERNAL
 #cmakedefine01 _LIBCPP_HAS_THREAD_API_WIN32
 #cmakedefine01 _LIBCPP_HAS_THREAD_API_C11
+// A shared Windows header set also serves consumers that select the static CRT.
+#if defined(_WIN32) && defined(_MSC_VER) && !defined(__MINGW32__) && !defined(_DLL) && \
+    !defined(_LIBCPP_BUILDING_LIBRARY)
+#  define _LIBCPP_DISABLE_VISIBILITY_ANNOTATIONS
+#else
 #cmakedefine _LIBCPP_DISABLE_VISIBILITY_ANNOTATIONS
+#endif
 #cmakedefine01 _LIBCPP_HAS_VENDOR_AVAILABILITY_ANNOTATIONS
 #cmakedefine _LIBCPP_NO_VCRUNTIME
 #cmakedefine _LIBCPP_TYPEINFO_COMPARISON_IMPLEMENTATION @_LIBCPP_TYPEINFO_COMPARISON_IMPLEMENTATION@

@@ -884,9 +884,8 @@ if (LIBCXX_EXTRA_SITE_DEFINES)
   config_define(${extra_site_defines} _LIBCPP_EXTRA_SITE_DEFINES)
 endif()
 
-# By default libc++ on Windows expects to use a shared library, which requires
-# the headers to use DLL import/export semantics. However when building a
-# static library only we modify the headers to disable DLL import/export.
+# Static-only Windows builds disable DLL annotations for every consumer.
+# Shared headers also disable imports for static CRT consumers in __config_site.
 if (DEFINED WIN32 AND LIBCXX_ENABLE_STATIC AND NOT LIBCXX_ENABLE_SHARED)
   message(STATUS "Generating custom __config for non-DLL Windows build")
   config_define(ON _LIBCPP_DISABLE_VISIBILITY_ANNOTATIONS)
