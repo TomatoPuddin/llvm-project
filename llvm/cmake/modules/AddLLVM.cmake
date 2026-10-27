@@ -80,6 +80,7 @@ function(llvm_update_compile_flags name)
 endfunction()
 
 function(llvm_update_pch name)
+  set_target_properties(${name} PROPERTIES LLVM_PCH_COMPONENT "${ARG_COMPONENT_LIB}")
   if(LLVM_REQUIRES_RTTI OR LLVM_REQUIRES_EH)
     # Non-default RTTI/EH results in incompatible flags, precluding PCH reuse.
     set(ARG_DISABLE_PCH_REUSE ON)
@@ -119,6 +120,14 @@ function(llvm_update_pch name)
   list(APPEND libs ${ARG_LINK_LIBS})
   foreach(lib ${libs})
     if(TARGET ${lib})
+      if(MSVC AND LLVM_BUILD_LLVM_DYLIB_VIS)
+        # A producer PCH carries dllexport references that consumers must import.
+        get_target_property(lib_pch_component ${lib} LLVM_PCH_COMPONENT)
+        if((ARG_COMPONENT_LIB AND NOT lib_pch_component) OR
+           (NOT ARG_COMPONENT_LIB AND lib_pch_component))
+          continue()
+        endif()
+      endif()
       get_target_property(lib_pch_priority ${lib} LLVM_PCH_PRIORITY)
       # Recent CMake versions warn if PCH is disabled but REUSE_FROM is set.
       # Ensure that the PCH actually exists before considering reuse.
