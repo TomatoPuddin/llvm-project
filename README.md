@@ -1,3 +1,32 @@
+# Fork Overview
+
+The `23.1.4-android` branch contains Android runtime changes based on
+[LLVM 23.1.4](https://github.com/llvm/llvm-project/releases/tag/llvmorg-23.1.4).
+Runtime fixes shared with `23.1.4` are cherry-picked onto this branch.
+
+Runtime build changes:
+
+- Resolve compiler-rt builtins from in-tree targets before searching the installed toolchain.
+- Enable optional whole-program vtables for runtime LTO sources and keep C/C++ split-unit settings consistent.
+
+Upstream runtime backports:
+
+- ARM builtins: avoid duplicate reverse-subtraction symbols ([PR #230739](https://github.com/llvm/llvm-project/pull/230739)).
+- libc++ CFI: suppress checks for a valid cast in `assume_aligned` ([PR #220296](https://github.com/llvm/llvm-project/pull/220296)).
+- libc++ shared arrays: detect allocation-size overflow in `make_shared<T[]>` and `allocate_shared<T[]>` ([PR #223735](https://github.com/llvm/llvm-project/pull/223735)).
+
+Android runtime patches:
+
+- Bionic: trivial mutex destruction ([PR #218055](https://github.com/llvm/llvm-project/pull/218055)) and random/filesystem support ([PR #219591](https://github.com/llvm/llvm-project/pull/219591)).
+- Sanitizers: exclude intentional unsigned arithmetic in `__libcpp_blsr` from integer checks ([Android downstream patch](https://android.googlesource.com/toolchain/llvm_android/+/a309e8d8406000c78e46520a104c4cf5a098d223/patches/Disable-integer-sanitizer-for-__libcpp_blsr.patch)).
+- Atomics: restore `<stdatomic.h>` support before C++23 by reverting [PR #123130](https://github.com/llvm/llvm-project/pull/123130).
+
+The runtime patches come from the
+[Android toolchain patch set](https://android.googlesource.com/toolchain/llvm_android/+/a309e8d8406000c78e46520a104c4cf5a098d223/patches/PATCHES.json).
+The `[ndk]` commit prefix records the patch source.
+
+---
+
 # The LLVM Compiler Infrastructure
 
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/llvm/llvm-project/badge)](https://securityscorecards.dev/viewer/?uri=github.com/llvm/llvm-project)
