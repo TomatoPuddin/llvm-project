@@ -57,6 +57,7 @@ public:
                       raw_pwrite_stream &OS);
   WinCOFFObjectWriter(std::unique_ptr<MCWinCOFFObjectTargetWriter> MOTW,
                       raw_pwrite_stream &OS, raw_pwrite_stream &DwoOS);
+  ~WinCOFFObjectWriter() override;
 
   // MCObjectWriter interface implementation.
   void reset() override;

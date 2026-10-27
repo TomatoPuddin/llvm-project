@@ -776,6 +776,7 @@ struct Ctx : CommonLinkerContext {
   llvm::DenseSet<std::pair<const Symbol *, uint64_t>> ppc64noTocRelax;
 
   Ctx();
+  ~Ctx() override;
 
   llvm::raw_fd_ostream openAuxiliaryFile(llvm::StringRef, std::error_code &);
 

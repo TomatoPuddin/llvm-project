@@ -71,6 +71,8 @@ public:
                   CoverageSourceInfo *CoverageInfo,
                   llvm::Module *CurLinkModule = nullptr);
 
+  ~BackendConsumer() override;
+
   llvm::Module *getModule() const;
   std::unique_ptr<llvm::Module> takeModule();
 

@@ -1806,6 +1806,8 @@ static uint8_t getOsAbi(const Triple &t) {
   }
 }
 
+BitcodeFile::~BitcodeFile() = default;
+
 BitcodeFile::BitcodeFile(Ctx &ctx, MemoryBufferRef mb, StringRef archiveName,
                          uint64_t offsetInArchive, bool lazy)
     : InputFile(ctx, BitcodeKind, mb) {

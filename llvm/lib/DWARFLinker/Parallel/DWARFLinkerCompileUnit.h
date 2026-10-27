@@ -95,6 +95,8 @@ public:
               OffsetToUnitTy UnitFromOffset, dwarf::FormParams Format,
               llvm::endianness Endianess);
 
+  ~CompileUnit() override;
+
   /// Returns stage of overall processing.
   Stage getStage() const { return Stage; }
 

@@ -325,6 +325,7 @@ class BitcodeFile : public InputFile {
 public:
   BitcodeFile(Ctx &, MemoryBufferRef m, StringRef archiveName,
               uint64_t offsetInArchive, bool lazy);
+  ~BitcodeFile() override;
   static bool classof(const InputFile *f) { return f->kind() == BitcodeKind; }
   void parse();
   void parseLazy();

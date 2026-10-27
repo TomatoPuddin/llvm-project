@@ -313,6 +313,7 @@ public:
   explicit BitcodeFile(MemoryBufferRef mb, StringRef archiveName,
                        uint64_t offsetInArchive, bool lazy = false,
                        bool forceHidden = false, bool compatArch = true);
+  ~BitcodeFile() override;
   static bool classof(const InputFile *f) { return f->kind() == BitcodeKind; }
   void parse();
 

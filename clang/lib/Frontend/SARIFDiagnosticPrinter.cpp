@@ -22,6 +22,8 @@
 
 namespace clang {
 
+SARIFDiagnosticPrinter::~SARIFDiagnosticPrinter() = default;
+
 SARIFDiagnosticPrinter::SARIFDiagnosticPrinter(raw_ostream &OS,
                                                DiagnosticOptions &DiagOpts)
     : OS(OS), DiagOpts(DiagOpts) {}

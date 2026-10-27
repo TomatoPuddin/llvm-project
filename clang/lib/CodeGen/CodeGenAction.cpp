@@ -137,6 +137,8 @@ BackendConsumer::BackendConsumer(CompilerInstance &CI, BackendAction Action,
     LLVMIRGeneration.init("irgen", "LLVM IR generation", CI.getTimerGroup());
 }
 
+BackendConsumer::~BackendConsumer() = default;
+
 llvm::Module* BackendConsumer::getModule() const {
   return Gen->GetModule();
 }

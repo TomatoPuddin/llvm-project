@@ -2391,6 +2391,8 @@ static macho::Symbol *createBitcodeSymbol(const lto::InputFile::Symbol &objSym,
                             /*isWeakDefCanBeHidden=*/false);
 }
 
+BitcodeFile::~BitcodeFile() = default;
+
 BitcodeFile::BitcodeFile(MemoryBufferRef mb, StringRef archiveName,
                          uint64_t offsetInArchive, bool lazy, bool forceHidden,
                          bool compatArch)

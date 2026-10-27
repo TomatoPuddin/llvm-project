@@ -30,7 +30,7 @@ class SarifDocumentWriter;
 class SARIFDiagnosticPrinter : public DiagnosticConsumer {
 public:
   SARIFDiagnosticPrinter(raw_ostream &OS, DiagnosticOptions &DiagOpts);
-  ~SARIFDiagnosticPrinter() = default;
+  ~SARIFDiagnosticPrinter() override;
 
   SARIFDiagnosticPrinter &operator=(const SARIFDiagnosticPrinter &&) = delete;
   SARIFDiagnosticPrinter(SARIFDiagnosticPrinter &&) = delete;

@@ -64,6 +64,8 @@ CompileUnit::CompileUnit(LinkingGlobalData &GlobalData, DWARFUnit &OrigUnit,
   SysRoot = dwarf::toStringRef(CUDie.find(dwarf::DW_AT_LLVM_sysroot)).str();
 }
 
+CompileUnit::~CompileUnit() = default;
+
 void CompileUnit::loadLineTable() {
   LineTablePtr = File.Dwarf->getLineTableForUnit(&getOrigUnit());
 }
