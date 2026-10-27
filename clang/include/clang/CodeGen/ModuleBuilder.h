@@ -15,6 +15,7 @@
 
 #include "clang/AST/ASTConsumer.h"
 #include "clang/Basic/LLVM.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/StringRef.h"
 
 namespace llvm {
@@ -49,7 +50,7 @@ namespace CodeGen {
 }
 
 /// The primary public interface to the Clang code generator.
-class CodeGenerator : public ASTConsumer {
+class CLANG_ABI CodeGenerator : public ASTConsumer {
   virtual void anchor();
 
 protected:
@@ -121,11 +122,13 @@ public:
 /// CreateLLVMCodeGen - Create a CodeGenerator instance.
 ///
 /// Remember to call Initialize() if you plan to use this directly.
+CLANG_ABI
 std::unique_ptr<CodeGenerator>
 CreateLLVMCodeGen(const CompilerInstance &CI, llvm::StringRef ModuleName,
                   llvm::LLVMContext &C,
                   CoverageSourceInfo *CoverageInfo = nullptr);
 
+CLANG_ABI
 std::unique_ptr<CodeGenerator>
 CreateLLVMCodeGen(DiagnosticsEngine &Diags, llvm::StringRef ModuleName,
                   IntrusiveRefCntPtr<llvm::vfs::FileSystem> FS,
@@ -147,7 +150,7 @@ namespace CodeGen {
 /// optional will not contain a value. Note the returned StringRefs if non-empty
 /// point into the underlying storage for \param FuncName and thus have the same
 /// lifetime.
-std::optional<std::pair<StringRef, StringRef>>
+CLANG_ABI std::optional<std::pair<StringRef, StringRef>>
 DemangleTrapReasonInDebugInfo(StringRef FuncName);
 } // namespace CodeGen
 

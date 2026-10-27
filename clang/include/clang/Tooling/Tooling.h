@@ -36,6 +36,7 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Frontend/PCHContainerOperations.h"
 #include "clang/Tooling/ArgumentsAdjusters.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/IntrusiveRefCntPtr.h"
 #include "llvm/ADT/StringMap.h"
@@ -70,7 +71,7 @@ class CompilationDatabase;
 /// files as its inputs.
 /// Returns nullptr if there are no such jobs or multiple of them. Note that
 /// offloading jobs are ignored.
-const llvm::opt::ArgStringList *
+CLANG_ABI const llvm::opt::ArgStringList *
 getCC1Arguments(DiagnosticsEngine *Diagnostics,
                 driver::Compilation *Compilation);
 
@@ -96,7 +97,7 @@ public:
 /// created for each translation unit processed by ClangTool.  This class is
 /// also a ToolAction which uses the FrontendActions created by create() to
 /// process each translation unit.
-class FrontendActionFactory : public ToolAction {
+class CLANG_ABI FrontendActionFactory : public ToolAction {
 public:
   ~FrontendActionFactory() override;
 
@@ -123,7 +124,7 @@ std::unique_ptr<FrontendActionFactory> newFrontendActionFactory();
 /// Callbacks called before and after each source file processed by a
 /// FrontendAction created by the FrontedActionFactory returned by \c
 /// newFrontendActionFactory.
-class SourceFileCallbacks {
+class CLANG_ABI SourceFileCallbacks {
 public:
   virtual ~SourceFileCallbacks() = default;
 
@@ -162,7 +163,7 @@ inline std::unique_ptr<FrontendActionFactory> newFrontendActionFactory(
 ///                         clang modules.
 ///
 /// \return - True if 'ToolAction' was successfully executed.
-bool runToolOnCode(std::unique_ptr<FrontendAction> ToolAction, const Twine &Code,
+CLANG_ABI bool runToolOnCode(std::unique_ptr<FrontendAction> ToolAction, const Twine &Code,
                    const Twine &FileName = "input.cc",
                    std::shared_ptr<PCHContainerOperations> PCHContainerOps =
                        std::make_shared<PCHContainerOperations>());
@@ -184,7 +185,7 @@ using FileContentMappings = std::vector<std::pair<std::string, std::string>>;
 ///                          clang modules.
 ///
 /// \return - True if 'ToolAction' was successfully executed.
-bool runToolOnCodeWithArgs(
+CLANG_ABI bool runToolOnCodeWithArgs(
     std::unique_ptr<FrontendAction> ToolAction, const Twine &Code,
     const std::vector<std::string> &Args, const Twine &FileName = "input.cc",
     const Twine &ToolName = "clang-tool",
@@ -193,7 +194,7 @@ bool runToolOnCodeWithArgs(
     const FileContentMappings &VirtualMappedFiles = FileContentMappings());
 
 // Similar to the overload except this takes a VFS.
-bool runToolOnCodeWithArgs(
+CLANG_ABI bool runToolOnCodeWithArgs(
     std::unique_ptr<FrontendAction> ToolAction, const Twine &Code,
     llvm::IntrusiveRefCntPtr<llvm::vfs::FileSystem> VFS,
     const std::vector<std::string> &Args, const Twine &FileName = "input.cc",
@@ -209,7 +210,7 @@ bool runToolOnCodeWithArgs(
 /// clang modules.
 ///
 /// \return The resulting AST or null if an error occurred.
-std::unique_ptr<ASTUnit>
+CLANG_ABI std::unique_ptr<ASTUnit>
 buildASTFromCode(StringRef Code, StringRef FileName = "input.cc",
                  std::shared_ptr<PCHContainerOperations> PCHContainerOps =
                      std::make_shared<PCHContainerOperations>());
@@ -231,7 +232,7 @@ buildASTFromCode(StringRef Code, StringRef FileName = "input.cc",
 /// VirtualMappedFiles takes precedence.
 ///
 /// \return The resulting AST or null if an error occurred.
-std::unique_ptr<ASTUnit> buildASTFromCodeWithArgs(
+CLANG_ABI std::unique_ptr<ASTUnit> buildASTFromCodeWithArgs(
     StringRef Code, const std::vector<std::string> &Args,
     StringRef FileName = "input.cc", StringRef ToolName = "clang-tool",
     std::shared_ptr<PCHContainerOperations> PCHContainerOps =
@@ -244,7 +245,7 @@ std::unique_ptr<ASTUnit> buildASTFromCodeWithArgs(
     CaptureDiagsKind CaptureKind = CaptureDiagsKind::None);
 
 /// Utility to run a FrontendAction in a single clang invocation.
-class ToolInvocation {
+class CLANG_ABI ToolInvocation {
 public:
   /// Create a tool invocation.
   ///
@@ -316,7 +317,7 @@ public:
 /// command line arguments before the arguments are used to run
 /// a frontend action. One could install an additional command line
 /// arguments adjuster by calling the appendArgumentsAdjuster() method.
-class ClangTool {
+class CLANG_ABI ClangTool {
 public:
   /// Constructs a clang tool to run over a list of files.
   ///
@@ -482,10 +483,10 @@ inline std::unique_ptr<FrontendActionFactory> newFrontendActionFactory(
 /// does by removing "./" and computing native paths.
 ///
 /// \param File Either an absolute or relative path.
-std::string getAbsolutePath(StringRef File);
+CLANG_ABI std::string getAbsolutePath(StringRef File);
 
 /// An overload of getAbsolutePath that works over the provided \p FS.
-llvm::Expected<std::string> getAbsolutePath(llvm::vfs::FileSystem &FS,
+CLANG_ABI llvm::Expected<std::string> getAbsolutePath(llvm::vfs::FileSystem &FS,
                                             StringRef File);
 
 /// Changes CommandLine to contain implicit flags that would have been
@@ -508,17 +509,17 @@ llvm::Expected<std::string> getAbsolutePath(llvm::vfs::FileSystem &FS,
 /// \note This will not set \c CommandLine[0] to \c InvokedAs. The tooling
 /// infrastructure expects that CommandLine[0] is a tool path relative to which
 /// the builtin headers can be found.
-void addTargetAndModeForProgramName(std::vector<std::string> &CommandLine,
+CLANG_ABI void addTargetAndModeForProgramName(std::vector<std::string> &CommandLine,
                                     StringRef InvokedAs);
 
 /// Helper function that expands response files in command line.
-void addExpandedResponseFiles(std::vector<std::string> &CommandLine,
+CLANG_ABI void addExpandedResponseFiles(std::vector<std::string> &CommandLine,
                               llvm::StringRef WorkingDir,
                               llvm::cl::TokenizerCallback Tokenizer,
                               llvm::vfs::FileSystem &FS);
 
 /// Creates a \c CompilerInvocation.
-CompilerInvocation *newInvocation(DiagnosticsEngine *Diagnostics,
+CLANG_ABI CompilerInvocation *newInvocation(DiagnosticsEngine *Diagnostics,
                                   ArrayRef<const char *> CC1Args,
                                   const char *const BinaryName);
 

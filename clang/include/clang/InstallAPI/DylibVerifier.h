@@ -12,6 +12,7 @@
 #include "clang/Basic/Diagnostic.h"
 #include "clang/Basic/SourceManager.h"
 #include "clang/InstallAPI/MachO.h"
+#include "clang/Support/Compiler.h"
 
 namespace clang {
 namespace installapi {
@@ -31,7 +32,7 @@ using ReexportedInterfaces = llvm::SmallVector<llvm::MachO::InterfaceFile, 8>;
 /// architecture slices. It is commonly used for comparing options
 /// passed on the command line to installapi and what exists in dylib load
 /// commands.
-class LibAttrs {
+class CLANG_ABI LibAttrs {
 public:
   using Entry = std::pair<std::string, ArchitectureSet>;
   using AttrsToArchs = llvm::SmallVector<Entry, 10>;
@@ -64,7 +65,7 @@ using ZipperedDeclSources = std::vector<ZipperedDeclSource>;
 /// lifetime of InstallAPI.
 /// As declarations are collected during AST traversal, they are
 /// compared as symbols against what is available in the binary dylib.
-class DylibVerifier : llvm::MachO::RecordVisitor {
+class CLANG_ABI DylibVerifier : llvm::MachO::RecordVisitor {
 private:
   struct SymbolContext;
   struct DWARFContext;

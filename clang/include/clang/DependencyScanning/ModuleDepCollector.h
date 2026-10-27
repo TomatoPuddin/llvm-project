@@ -19,6 +19,7 @@
 #include "clang/Lex/HeaderSearch.h"
 #include "clang/Lex/PPCallbacks.h"
 #include "clang/Serialization/ASTReader.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/Hashing.h"
 #include "llvm/ADT/StringSet.h"
@@ -38,7 +39,7 @@ class PrebuiltModuleASTAttrs;
 /// Attributes loaded from AST files of prebuilt modules collected prior to
 /// ModuleDepCollector creation.
 using PrebuiltModulesAttrsMap = llvm::StringMap<PrebuiltModuleASTAttrs>;
-class PrebuiltModuleASTAttrs {
+class CLANG_ABI PrebuiltModuleASTAttrs {
 public:
   /// When a module is discovered to not be in stable directories, traverse &
   /// update all modules that depend on it.
@@ -78,7 +79,7 @@ private:
 
 /// Collects modular and non-modular dependencies of the main file by attaching
 /// \c ModuleDepCollectorPP to the preprocessor.
-class ModuleDepCollector final : public DependencyCollector {
+class CLANG_ABI ModuleDepCollector final : public DependencyCollector {
 public:
   ModuleDepCollector(DependencyScanningService &Service,
                      std::unique_ptr<DependencyOutputOptions> Opts,
@@ -202,7 +203,7 @@ private:
 };
 
 /// Resets codegen options that don't affect modules/PCH.
-void resetBenignCodeGenOptions(frontend::ActionKind ProgramAction,
+CLANG_ABI void resetBenignCodeGenOptions(frontend::ActionKind ProgramAction,
                                const LangOptions &LangOpts,
                                CodeGenOptions &CGOpts);
 
@@ -210,7 +211,7 @@ void resetBenignCodeGenOptions(frontend::ActionKind ProgramAction,
 ///
 /// \param Directories Paths known to be in a stable location. e.g. Sysroot.
 /// \param Input Path to evaluate.
-bool isPathInStableDir(const ArrayRef<StringRef> Directories,
+CLANG_ABI bool isPathInStableDir(const ArrayRef<StringRef> Directories,
                        const StringRef Input);
 
 /// Determine if options collected from a module's
@@ -218,7 +219,7 @@ bool isPathInStableDir(const ArrayRef<StringRef> Directories,
 ///
 /// \param Directories Paths known to be in a stable location. e.g. Sysroot.
 /// \param HSOpts Header search options derived from the compiler invocation.
-bool areOptionsInStableDir(const ArrayRef<StringRef> Directories,
+CLANG_ABI bool areOptionsInStableDir(const ArrayRef<StringRef> Directories,
                            const HeaderSearchOptions &HSOpts);
 
 } // end namespace dependencies

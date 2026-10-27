@@ -34,7 +34,7 @@ class ASTMergeAction;
 class CompilerInstance;
 
 /// Abstract base class for actions which can be performed by the frontend.
-class FrontendAction {
+class CLANG_ABI FrontendAction {
   FrontendInputFile CurrentInput;
   std::unique_ptr<ASTUnit> CurrentASTUnit;
   CompilerInstance *Instance;
@@ -252,7 +252,7 @@ public:
 };
 
 /// Abstract base class to use for AST consumer-based frontend actions.
-class ASTFrontendAction : public FrontendAction {
+class CLANG_ABI ASTFrontendAction : public FrontendAction {
 protected:
   /// Implement the ExecuteAction interface by running Sema on
   /// the already-initialized AST consumer.
@@ -297,7 +297,7 @@ public:
 };
 
 /// Abstract base class to use for preprocessor-based frontend actions.
-class PreprocessorFrontendAction : public FrontendAction {
+class CLANG_ABI PreprocessorFrontendAction : public FrontendAction {
 protected:
   /// Provide a default implementation which returns aborts;
   /// this method should never be called by FrontendAction clients.
@@ -314,7 +314,7 @@ public:
 /// Deriving from this class allows an action to inject custom logic around
 /// some existing action's behavior. It implements every virtual method in
 /// the FrontendAction interface by forwarding to the wrapped action.
-class WrapperFrontendAction : public FrontendAction {
+class CLANG_ABI  WrapperFrontendAction : public FrontendAction {
 protected:
   std::unique_ptr<FrontendAction> WrappedAction;
 

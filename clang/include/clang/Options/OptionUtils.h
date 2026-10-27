@@ -15,6 +15,7 @@
 
 #include "clang/Basic/Diagnostic.h"
 #include "clang/Basic/LLVM.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/Option/OptSpecifier.h"
 
 namespace llvm {
@@ -31,7 +32,7 @@ namespace clang {
 
 /// Return the value of the last argument as an integer, or a default. If Diags
 /// is non-null, emits an error if the argument is given, but non-integral.
-int getLastArgIntValue(const llvm::opt::ArgList &Args,
+CLANG_ABI int getLastArgIntValue(const llvm::opt::ArgList &Args,
                        llvm::opt::OptSpecifier Id, int Default,
                        DiagnosticsEngine *Diags = nullptr, unsigned Base = 0);
 
@@ -41,7 +42,7 @@ inline int getLastArgIntValue(const llvm::opt::ArgList &Args,
   return getLastArgIntValue(Args, Id, Default, &Diags, Base);
 }
 
-uint64_t getLastArgUInt64Value(const llvm::opt::ArgList &Args,
+CLANG_ABI uint64_t getLastArgUInt64Value(const llvm::opt::ArgList &Args,
                                llvm::opt::OptSpecifier Id, uint64_t Default,
                                DiagnosticsEngine *Diags = nullptr,
                                unsigned Base = 0);
@@ -56,17 +57,17 @@ inline uint64_t getLastArgUInt64Value(const llvm::opt::ArgList &Args,
 
 // Parse -mprefer-vector-width=. Return the Value string if well-formed.
 // Otherwise, return an empty string and issue a diagnosic message if needed.
-StringRef parseMPreferVectorWidthOption(clang::DiagnosticsEngine &Diags,
+CLANG_ABI StringRef parseMPreferVectorWidthOption(clang::DiagnosticsEngine &Diags,
                                         const llvm::opt::ArgList &Args);
 
 // Parse -mrecip. Return the Value string if well-formed.
 // Otherwise, return an empty string and issue a diagnosic message if needed.
-StringRef parseMRecipOption(clang::DiagnosticsEngine &Diags,
+CLANG_ABI StringRef parseMRecipOption(clang::DiagnosticsEngine &Diags,
                             const llvm::opt::ArgList &Args);
 
 /// Get the directory where the compiler headers reside, relative to the
 /// compiler binary path \p BinaryPath.
-std::string GetResourcesPath(StringRef BinaryPath);
+CLANG_ABI std::string GetResourcesPath(StringRef BinaryPath);
 
 /// Get the directory where the compiler headers reside, relative to the
 /// compiler binary path (found by the passed in arguments).
@@ -75,7 +76,7 @@ std::string GetResourcesPath(StringRef BinaryPath);
 /// compiler path.
 /// \param MainAddr The address of main (or some other function in the main
 /// executable), for finding the builtin compiler path.
-std::string GetResourcesPath(const char *Argv0, void *MainAddr);
+CLANG_ABI std::string GetResourcesPath(const char *Argv0, void *MainAddr);
 
 /// Parse a space-separated command line with escaped spaces and backslashes.
 llvm::Expected<llvm::SmallVector<llvm::SmallString<8>>>

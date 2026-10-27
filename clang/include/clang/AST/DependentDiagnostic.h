@@ -33,7 +33,7 @@ class CXXRecordDecl;
 class NamedDecl;
 
 /// A dependently-generated diagnostic.
-class DependentDiagnostic {
+class CLANG_ABI DependentDiagnostic {
 public:
   enum AccessNonce { Access = 0 };
 
@@ -124,7 +124,7 @@ private:
 };
 
 /// An iterator over the dependent diagnostics in a dependent context.
-class DeclContext::ddiag_iterator {
+class CLANG_ABI DeclContext::ddiag_iterator {
 public:
   ddiag_iterator() = default;
   explicit ddiag_iterator(DependentDiagnostic *Ptr) : Ptr(Ptr) {}

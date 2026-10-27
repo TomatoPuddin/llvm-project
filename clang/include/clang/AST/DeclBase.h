@@ -23,6 +23,7 @@
 #include "clang/Basic/LangOptions.h"
 #include "clang/Basic/SourceLocation.h"
 #include "clang/Basic/Specifiers.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/PointerIntPair.h"
 #include "llvm/ADT/PointerUnion.h"
@@ -83,7 +84,7 @@ enum AvailabilityResult {
 /// (and its subclasses) in its Decl::operator new(). Proper alignment
 /// of all subclasses (not requiring more than the alignment of Decl) is
 /// asserted in DeclBase.cpp.
-class alignas(8) Decl {
+class alignas(8) CLANG_ABI Decl {
 public:
   /// Lists the kind of concrete classes of Decl.
   enum Kind {
@@ -1314,7 +1315,7 @@ inline bool declaresSameEntity(const Decl *D1, const Decl *D2) {
 
 /// PrettyStackTraceDecl - If a crash occurs, indicate that it happened when
 /// doing something to a specific decl.
-class PrettyStackTraceDecl : public llvm::PrettyStackTraceEntry {
+class CLANG_ABI PrettyStackTraceDecl : public llvm::PrettyStackTraceEntry {
   const Decl *TheDecl;
   SourceLocation Loc;
   SourceManager &SM;
@@ -1343,7 +1344,7 @@ namespace llvm {
 
 namespace clang {
 /// A list storing NamedDecls in the lookup tables.
-class DeclListNode {
+class CLANG_ABI DeclListNode {
   friend class ASTContext; // allocate, deallocate nodes.
   friend class StoredDeclsList;
 public:
@@ -1396,7 +1397,7 @@ private:
 };
 
 /// The results of name lookup within a DeclContext.
-class DeclContextLookupResult {
+class CLANG_ABI DeclContextLookupResult {
   using Decls = DeclListNode::Decls;
 
   /// When in collection form, this is what the Data pointer points to.
@@ -1463,7 +1464,7 @@ enum class LinkageSpecLanguageIDs;
 ///   ExportDecl
 ///   BlockDecl
 ///   CapturedDecl
-class DeclContext {
+class CLANG_ABI DeclContext {
   /// For makeDeclVisibleInContextImpl
   friend class ASTDeclReader;
   /// For checking the new bits in the Serialization part.
@@ -2357,7 +2358,7 @@ public:
 
   /// decl_iterator - Iterates through the declarations stored
   /// within this context.
-  class decl_iterator {
+  class CLANG_ABI decl_iterator {
     /// Current - The current declaration.
     Decl *Current = nullptr;
 

@@ -14,6 +14,7 @@
 #include "clang/Driver/Action.h"
 #include "clang/Driver/Job.h"
 #include "clang/Driver/Util.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/StringRef.h"
@@ -43,7 +44,7 @@ class ToolChain;
 
 /// Compilation - A set of tasks to perform for a single driver
 /// invocation.
-class Compilation {
+class CLANG_ABI Compilation {
   /// The driver we were created by.
   const Driver &TheDriver;
 

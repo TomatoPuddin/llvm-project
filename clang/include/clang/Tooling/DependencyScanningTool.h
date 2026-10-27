@@ -15,6 +15,7 @@
 #include "clang/DependencyScanning/DependencyScanningWorker.h"
 #include "clang/DependencyScanning/ModuleDepCollector.h"
 #include "clang/Tooling/CompilationDatabase.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/DenseSet.h"
 #include <optional>
 #include <string>
@@ -31,7 +32,7 @@ struct P1689Rule {
 
 /// The high-level implementation of the dependency discovery tool that runs on
 /// an individual worker thread.
-class DependencyScanningTool {
+class CLANG_ABI DependencyScanningTool {
 public:
   /// Construct a dependency scanning tool.
   ///
@@ -134,7 +135,7 @@ private:
 ///
 /// \returns false if any errors occurred (with diagnostics reported to
 /// \c DiagConsumer), true otherwise.
-bool computeDependencies(
+CLANG_ABI bool computeDependencies(
     dependencies::DependencyScanningWorker &Worker, StringRef WorkingDirectory,
     ArrayRef<std::string> CommandLine,
     dependencies::DependencyConsumer &Consumer,

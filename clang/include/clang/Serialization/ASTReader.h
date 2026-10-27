@@ -114,7 +114,7 @@ class VarDecl;
 /// listener to pass on specific information. Some of the listener methods can
 /// return true to indicate to the ASTReader that the information (and
 /// consequently the AST file) is invalid.
-class ASTReaderListener {
+class CLANG_ABI ASTReaderListener {
 public:
   virtual ~ASTReaderListener();
 
@@ -273,7 +273,7 @@ public:
 };
 
 /// Simple wrapper class for chaining listeners.
-class ChainedASTReaderListener : public ASTReaderListener {
+class CLANG_ABI ChainedASTReaderListener : public ASTReaderListener {
   std::unique_ptr<ASTReaderListener> First;
   std::unique_ptr<ASTReaderListener> Second;
 
@@ -324,7 +324,7 @@ public:
 
 /// ASTReaderListener implementation to validate the information of
 /// the PCH file against an initialized Preprocessor.
-class PCHValidator : public ASTReaderListener {
+class CLANG_ABI PCHValidator : public ASTReaderListener {
   Preprocessor &PP;
   ASTReader &Reader;
 
@@ -357,7 +357,7 @@ public:
 /// ASTReader which is required to use a pch file. This is the replacement
 /// of PCHValidator or SimplePCHValidator when using a pch file without
 /// validating it.
-class SimpleASTReaderListener : public ASTReaderListener {
+class CLANG_ABI SimpleASTReaderListener : public ASTReaderListener {
   Preprocessor &PP;
 
 public:
@@ -418,7 +418,7 @@ struct LookupBlockOffsets : VisibleLookupBlockOffsets {
 /// The AST reader provides lazy de-serialization of declarations, as
 /// required when traversing the AST. Only those AST nodes that are
 /// actually required will be de-serialized.
-class ASTReader : public ExternalPreprocessorSource,
+class CLANG_ABI ASTReader : public ExternalPreprocessorSource,
                   public ExternalPreprocessingRecordSource,
                   public ExternalHeaderFileInfoSource,
                   public ExternalSemaSource,

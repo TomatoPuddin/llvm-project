@@ -11,6 +11,7 @@
 
 #include "clang/Basic/LLVM.h"
 #include "clang/Tooling/Refactoring/RefactoringActionRules.h"
+#include "clang/Support/Compiler.h"
 #include <vector>
 
 namespace clang {
@@ -36,7 +37,7 @@ namespace tooling {
 ///   - tool vs editor: some refactoring operation can be initiated in the
 ///     editor when a declaration is selected, or in a tool when the name of
 ///     the declaration is passed using a command-line argument.
-class RefactoringAction {
+class CLANG_ABI RefactoringAction {
 public:
   virtual ~RefactoringAction() {}
 
@@ -55,7 +56,7 @@ protected:
 };
 
 /// Returns the list of all the available refactoring actions.
-std::vector<std::unique_ptr<RefactoringAction>> createRefactoringActions();
+CLANG_ABI std::vector<std::unique_ptr<RefactoringAction>> createRefactoringActions();
 
 } // end namespace tooling
 } // end namespace clang

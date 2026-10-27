@@ -17,6 +17,7 @@
 #include "clang/AST/GlobalDecl.h"
 #include "clang/AST/Type.h"
 #include "clang/Basic/ABI.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/Support/Casting.h"
 #include <optional>
@@ -200,7 +201,7 @@ public:
   /// @}
 };
 
-class ItaniumMangleContext : public MangleContext {
+class CLANG_ABI ItaniumMangleContext : public MangleContext {
 public:
   using DiscriminatorOverrideTy = UnsignedOrNone (*)(ASTContext &,
                                                      const NamedDecl *);
@@ -243,7 +244,7 @@ public:
                                       bool IsAux = false);
 };
 
-class MicrosoftMangleContext : public MangleContext {
+class CLANG_ABI MicrosoftMangleContext : public MangleContext {
 public:
   explicit MicrosoftMangleContext(ASTContext &C, DiagnosticsEngine &D,
                                   bool IsAux = false)
@@ -310,7 +311,7 @@ public:
   create(ASTContext &Context, DiagnosticsEngine &Diags, bool IsAux = false);
 };
 
-class ASTNameGenerator {
+class CLANG_ABI ASTNameGenerator {
 public:
   explicit ASTNameGenerator(ASTContext &Ctx);
   ~ASTNameGenerator();

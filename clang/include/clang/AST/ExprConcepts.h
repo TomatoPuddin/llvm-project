@@ -24,6 +24,7 @@
 #include "clang/AST/TemplateBase.h"
 #include "clang/AST/Type.h"
 #include "clang/Basic/SourceLocation.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/STLFunctionalExtras.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/TrailingObjects.h"
@@ -39,7 +40,7 @@ class ASTStmtWriter;
 ///
 /// According to C++2a [expr.prim.id]p3 an id-expression that denotes the
 /// specialization of a concept results in a prvalue of type bool.
-class ConceptSpecializationExpr final : public Expr {
+class CLANG_ABI ConceptSpecializationExpr final : public Expr {
   friend class ASTReader;
   friend class ASTStmtReader;
 
@@ -167,7 +168,7 @@ namespace concepts {
 
 /// \brief A static requirement that can be used in a requires-expression to
 /// check properties of types and expression.
-class Requirement {
+class CLANG_ABI Requirement {
 public:
   // Note - simple and compound requirements are both represented by the same
   // class (ExprRequirement).
@@ -224,7 +225,7 @@ public:
 
 /// \brief A requires-expression requirement which queries the existence of a
 /// type name or type template specialization ('type' requirements).
-class TypeRequirement : public Requirement {
+class CLANG_ABI TypeRequirement : public Requirement {
 public:
   enum SatisfactionStatus {
       SS_Dependent,
@@ -279,7 +280,7 @@ public:
 
 /// \brief A requires-expression requirement which queries the validity and
 /// properties of an expression ('simple' and 'compound' requirements).
-class ExprRequirement : public Requirement {
+class CLANG_ABI ExprRequirement : public Requirement {
 public:
   enum SatisfactionStatus {
       SS_Dependent,
@@ -429,7 +430,7 @@ public:
 
 /// \brief A requires-expression requirement which is satisfied when a general
 /// constraint expression is satisfied ('nested' requirements).
-class NestedRequirement : public Requirement {
+class CLANG_ABI NestedRequirement : public Requirement {
   Expr *Constraint = nullptr;
   const ASTConstraintSatisfaction *Satisfaction = nullptr;
   bool HasInvalidConstraint = false;
@@ -500,7 +501,7 @@ public:
 ///     lookup (6.4) or by checking properties of types and expressions.
 ///     [...]
 ///     A requires-expression is a prvalue of type bool [...]
-class RequiresExpr final : public Expr,
+class CLANG_ABI RequiresExpr final : public Expr,
     llvm::TrailingObjects<RequiresExpr, ParmVarDecl *,
                           concepts::Requirement *> {
   friend TrailingObjects;

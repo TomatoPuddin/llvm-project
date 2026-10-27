@@ -30,6 +30,7 @@
 #include "clang/Sema/CodeCompleteConsumer.h"
 #include "clang/Serialization/ASTBitCodes.h"
 #include "clang/Serialization/ASTWriter.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/IntrusiveRefCntPtr.h"
@@ -90,7 +91,7 @@ enum class SkipFunctionBodiesScope { None, Preamble, PreambleAndMainFile };
 enum class CaptureDiagsKind { None, All, AllWithoutNonErrorsFromIncludes };
 
 /// Utility class for loading a ASTContext from an AST file.
-class ASTUnit {
+class CLANG_ABI ASTUnit {
   std::unique_ptr<LangOptions> LangOpts;
   std::unique_ptr<CodeGenOptions> CodeGenOpts;
   // FIXME: The documentation on \c LoadFrom* member functions states that the

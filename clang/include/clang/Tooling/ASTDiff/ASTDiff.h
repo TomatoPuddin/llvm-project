@@ -20,6 +20,7 @@
 #define LLVM_CLANG_TOOLING_ASTDIFF_ASTDIFF_H
 
 #include "clang/Tooling/ASTDiff/ASTDiffInternal.h"
+#include "clang/Support/Compiler.h"
 #include <optional>
 
 namespace clang {
@@ -35,7 +36,7 @@ enum ChangeKind {
 };
 
 /// Represents a Clang AST node, alongside some additional information.
-struct Node {
+struct CLANG_ABI Node {
   NodeId Parent, LeftMostDescendant, RightMostDescendant;
   int Depth, Height, Shift = 0;
   DynTypedNode ASTNode;
@@ -51,7 +52,7 @@ struct Node {
 
 /// SyntaxTree objects represent subtrees of the AST.
 /// They can be constructed from any Decl or Stmt.
-class SyntaxTree {
+class CLANG_ABI SyntaxTree {
 public:
   /// Constructs a tree from a translation unit.
   SyntaxTree(ASTContext &AST);
@@ -107,7 +108,7 @@ struct ComparisonOptions {
   }
 };
 
-class ASTDiff {
+class CLANG_ABI ASTDiff {
 public:
   ASTDiff(SyntaxTree &Src, SyntaxTree &Dst, const ComparisonOptions &Options);
   ~ASTDiff();

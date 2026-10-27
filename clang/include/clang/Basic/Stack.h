@@ -18,6 +18,7 @@
 
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/Support/Compiler.h"
+#include "clang/Support/Compiler.h"
 
 namespace clang {
   /// The amount of stack space that Clang would like to be provided with.
@@ -30,7 +31,7 @@ namespace clang {
   ///
   /// \param ForceSet set to true if you know the call is near the bottom of a
   ///                 new stack. Used for split stacks.
-  void noteBottomOfStack(bool ForceSet = false);
+  CLANG_ABI void noteBottomOfStack(bool ForceSet = false);
 
   /// Determine whether the stack is nearly exhausted.
   bool isStackNearlyExhausted();

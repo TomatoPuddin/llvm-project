@@ -20,6 +20,7 @@
 #include "clang/Basic/LLVM.h"
 #include "clang/Basic/SourceLocation.h"
 #include "clang/Basic/TokenKinds.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/DenseMapInfo.h"
 #include "llvm/ADT/FoldingSet.h"
 #include "llvm/ADT/PointerIntPair.h"
@@ -1003,7 +1004,7 @@ public:
 /// MultiKeywordSelector (which is private). This enables us to optimize
 /// selectors that take no arguments and selectors that take 1 argument, which
 /// accounts for 78% of all selectors in Cocoa.h.
-class Selector {
+class CLANG_ABI Selector {
   friend class Diagnostic;
   friend class SelectorTable; // only the SelectorTable can create these
   friend class DeclarationName; // and the AST's DeclarationName.
@@ -1151,7 +1152,7 @@ public:
 
 /// This table allows us to fully hide how we implement
 /// multi-keyword caching.
-class SelectorTable {
+class CLANG_ABI SelectorTable {
   // Actually a SelectorTableImpl
   void *Impl;
 

@@ -28,6 +28,7 @@
 #include "clang/Basic/SourceLocation.h"
 #include "clang/Basic/Specifiers.h"
 #include "clang/Basic/TypeTraits.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/APFloat.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/BitmaskEnum.h"
@@ -83,7 +84,7 @@ enum class StringLiteralKind;
 
 /// Stmt - This represents one statement.
 ///
-class alignas(void *) Stmt {
+class alignas(void *) CLANG_ABI Stmt {
 public:
   enum StmtClass {
     NoStmtClass = 0,
@@ -1638,7 +1639,7 @@ public:
 /// expressions. For example, CompoundStmt mixes statements, expressions
 /// and declarations (variables, types). Another example is ForStmt, where
 /// the first statement can be an expression or a declaration.
-class DeclStmt : public Stmt {
+class CLANG_ABI DeclStmt : public Stmt {
   DeclGroupRef DG;
   SourceLocation StartLoc, EndLoc;
 
@@ -1710,7 +1711,7 @@ public:
 
 /// NullStmt - This is the null statement ";": C99 6.8.3p3.
 ///
-class NullStmt : public Stmt {
+class CLANG_ABI NullStmt : public Stmt {
 public:
   NullStmt(SourceLocation L, bool hasLeadingEmptyMacro = false)
       : Stmt(NullStmtClass) {
@@ -1880,7 +1881,7 @@ public:
 };
 
 // SwitchCase is the base class for CaseStmt and DefaultStmt,
-class SwitchCase : public Stmt {
+class CLANG_ABI SwitchCase : public Stmt {
 protected:
   /// The location of the ":".
   SourceLocation ColonLoc;
@@ -1925,7 +1926,7 @@ public:
 
 /// CaseStmt - Represent a case statement. It can optionally be a GNU case
 /// statement of the form LHS ... RHS representing a range of cases.
-class CaseStmt final
+class CLANG_ABI CaseStmt final
     : public SwitchCase,
       private llvm::TrailingObjects<CaseStmt, Stmt *, SourceLocation> {
   friend TrailingObjects;
@@ -2077,7 +2078,7 @@ public:
   }
 };
 
-class DefaultStmt : public SwitchCase {
+class CLANG_ABI DefaultStmt : public SwitchCase {
   Stmt *SubStmt;
 
 public:
@@ -2134,7 +2135,7 @@ Stmt *SwitchCase::getSubStmt() {
 /// Value statements have a special meaning when they are the last non-null
 /// statement in a GNU statement expression, where they determine the value
 /// of the statement expression.
-class ValueStmt : public Stmt {
+class CLANG_ABI ValueStmt : public Stmt {
 protected:
   using Stmt::Stmt;
 
@@ -2153,7 +2154,7 @@ public:
 
 /// LabelStmt - Represents a label, which has a substatement.  For example:
 ///    foo: return;
-class LabelStmt : public ValueStmt {
+class CLANG_ABI LabelStmt : public ValueStmt {
   LabelDecl *TheDecl;
   Stmt *SubStmt;
   bool SideEntry = false;
@@ -2208,7 +2209,7 @@ public:
 ///
 /// Represents an attribute applied to a statement. For example:
 ///   [[omp::for(...)]] for (...) { ... }
-class AttributedStmt final
+class CLANG_ABI AttributedStmt final
     : public ValueStmt,
       private llvm::TrailingObjects<AttributedStmt, const Attr *> {
   friend class ASTStmtReader;
@@ -2264,7 +2265,7 @@ public:
 };
 
 /// IfStmt - This represents an if/then/else.
-class IfStmt final
+class CLANG_ABI IfStmt final
     : public Stmt,
       private llvm::TrailingObjects<IfStmt, Stmt *, SourceLocation> {
   friend TrailingObjects;
@@ -2515,7 +2516,7 @@ public:
 };
 
 /// SwitchStmt - This represents a 'switch' stmt.
-class SwitchStmt final : public Stmt,
+class CLANG_ABI SwitchStmt final : public Stmt,
                          private llvm::TrailingObjects<SwitchStmt, Stmt *> {
   friend TrailingObjects;
 
@@ -2703,7 +2704,7 @@ public:
 };
 
 /// WhileStmt - This represents a 'while' stmt.
-class WhileStmt final : public Stmt,
+class CLANG_ABI WhileStmt final : public Stmt,
                         private llvm::TrailingObjects<WhileStmt, Stmt *> {
   friend TrailingObjects;
 
@@ -2839,7 +2840,7 @@ public:
 };
 
 /// DoStmt - This represents a 'do/while' stmt.
-class DoStmt : public Stmt {
+class CLANG_ABI DoStmt : public Stmt {
   enum { BODY, COND, END_EXPR };
   Stmt *SubExprs[END_EXPR];
   SourceLocation WhileLoc;
@@ -2895,7 +2896,7 @@ public:
 /// ForStmt - This represents a 'for (init;cond;inc)' stmt.  Note that any of
 /// the init/cond/inc parts of the ForStmt will be null if they were not
 /// specified in the source.
-class ForStmt : public Stmt {
+class CLANG_ABI ForStmt : public Stmt {
   friend class ASTStmtReader;
 
   enum { INIT, CONDVAR, COND, INC, BODY, END_EXPR };
@@ -2976,7 +2977,7 @@ public:
 };
 
 /// GotoStmt - This represents a direct goto.
-class GotoStmt : public Stmt {
+class CLANG_ABI GotoStmt : public Stmt {
   LabelDecl *Label;
   SourceLocation LabelLoc;
 
@@ -3015,7 +3016,7 @@ public:
 };
 
 /// IndirectGotoStmt - This represents an indirect goto.
-class IndirectGotoStmt : public Stmt {
+class CLANG_ABI IndirectGotoStmt : public Stmt {
   SourceLocation StarLoc;
   Stmt *Target;
 
@@ -3064,7 +3065,7 @@ public:
 };
 
 /// Base class for BreakStmt and ContinueStmt.
-class LoopControlStmt : public Stmt {
+class CLANG_ABI LoopControlStmt : public Stmt {
   /// If this is a named break/continue, the label whose statement we're
   /// targeting, as well as the source location of the label after the
   /// keyword; for example:
@@ -3126,7 +3127,7 @@ public:
 };
 
 /// ContinueStmt - This represents a continue.
-class ContinueStmt : public LoopControlStmt {
+class CLANG_ABI ContinueStmt : public LoopControlStmt {
 public:
   ContinueStmt(SourceLocation CL) : LoopControlStmt(ContinueStmtClass, CL) {}
   ContinueStmt(SourceLocation CL, SourceLocation LabelLoc, LabelDecl *Target)
@@ -3142,7 +3143,7 @@ public:
 };
 
 /// BreakStmt - This represents a break.
-class BreakStmt : public LoopControlStmt {
+class CLANG_ABI BreakStmt : public LoopControlStmt {
 public:
   BreakStmt(SourceLocation BL) : LoopControlStmt(BreakStmtClass, BL) {}
   BreakStmt(SourceLocation CL, SourceLocation LabelLoc, LabelDecl *Target)
@@ -3165,7 +3166,7 @@ public:
 /// return a value, and it allows returning a value in functions declared to
 /// return void.  We explicitly model this in the AST, which means you can't
 /// depend on the return type of the function and the presence of an argument.
-class ReturnStmt final
+class CLANG_ABI ReturnStmt final
     : public Stmt,
       private llvm::TrailingObjects<ReturnStmt, const VarDecl *> {
   friend TrailingObjects;
@@ -3243,7 +3244,7 @@ public:
 };
 
 /// DeferStmt - This represents a deferred statement.
-class DeferStmt : public Stmt {
+class CLANG_ABI DeferStmt : public Stmt {
   friend class ASTStmtReader;
 
   /// The deferred statement.
@@ -3284,7 +3285,7 @@ public:
 };
 
 /// AsmStmt is the base class for GCCAsmStmt and MSAsmStmt.
-class AsmStmt : public Stmt {
+class CLANG_ABI AsmStmt : public Stmt {
 protected:
   friend class ASTStmtReader;
 
@@ -3453,7 +3454,7 @@ public:
 };
 
 /// This represents a GCC inline-assembly statement extension.
-class GCCAsmStmt : public AsmStmt {
+class CLANG_ABI GCCAsmStmt : public AsmStmt {
   friend class ASTStmtReader;
 
   SourceLocation RParenLoc;
@@ -3672,7 +3673,7 @@ public:
 };
 
 /// This represents a Microsoft inline-assembly statement extension.
-class MSAsmStmt : public AsmStmt {
+class CLANG_ABI MSAsmStmt : public AsmStmt {
   friend class ASTStmtReader;
 
   SourceLocation LBraceLoc, EndLoc;
@@ -3773,7 +3774,7 @@ public:
   }
 };
 
-class SEHExceptStmt : public Stmt {
+class CLANG_ABI SEHExceptStmt : public Stmt {
   friend class ASTReader;
   friend class ASTStmtReader;
 
@@ -3817,7 +3818,7 @@ public:
   }
 };
 
-class SEHFinallyStmt : public Stmt {
+class CLANG_ABI SEHFinallyStmt : public Stmt {
   friend class ASTReader;
   friend class ASTStmtReader;
 
@@ -3852,7 +3853,7 @@ public:
   }
 };
 
-class SEHTryStmt : public Stmt {
+class CLANG_ABI SEHTryStmt : public Stmt {
   friend class ASTReader;
   friend class ASTStmtReader;
 
@@ -3905,7 +3906,7 @@ public:
 };
 
 /// Represents a __leave statement.
-class SEHLeaveStmt : public Stmt {
+class CLANG_ABI SEHLeaveStmt : public Stmt {
   SourceLocation LeaveLoc;
 
 public:
@@ -3944,7 +3945,7 @@ public:
 ///   compute();
 /// }
 /// @endcode
-class CapturedStmt : public Stmt {
+class CLANG_ABI CapturedStmt : public Stmt {
 public:
   /// The different capture forms: by 'this', by reference, capture for
   /// variable-length array type etc.

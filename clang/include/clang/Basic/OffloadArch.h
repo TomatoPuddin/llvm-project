@@ -9,6 +9,7 @@
 #ifndef LLVM_CLANG_BASIC_OFFLOADARCH_H
 #define LLVM_CLANG_BASIC_OFFLOADARCH_H
 
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/StringRef.h"
 #include <tuple>
 
@@ -158,14 +159,14 @@ static inline bool IsIntelOffloadArch(OffloadArch Arch) {
   return IsIntelCPUOffloadArch(Arch) || IsIntelGPUOffloadArch(Arch);
 }
 
-const char *OffloadArchToString(OffloadArch A);
-const char *OffloadArchToVirtualArchString(OffloadArch A);
+CLANG_ABI const char *OffloadArchToString(OffloadArch A);
+CLANG_ABI const char *OffloadArchToVirtualArchString(OffloadArch A);
 
 // Convert a string to an OffloadArch enum value. Returns
 // OffloadArch::Unknown if the string is not recognized.
-OffloadArch StringToOffloadArch(llvm::StringRef S);
+CLANG_ABI OffloadArch StringToOffloadArch(llvm::StringRef S);
 
-llvm::Triple OffloadArchToTriple(const llvm::Triple &DefaultToolchainTriple,
+CLANG_ABI llvm::Triple OffloadArchToTriple(const llvm::Triple &DefaultToolchainTriple,
                                  OffloadArch ID);
 
 /// Represents a bound architecture for offload / multiple architecture

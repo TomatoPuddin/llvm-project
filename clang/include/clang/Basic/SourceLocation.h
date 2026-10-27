@@ -16,6 +16,7 @@
 
 #include "clang/Basic/FileEntry.h"
 #include "clang/Basic/LLVM.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/StringRef.h"
 #include <cassert>
 #include <cstdint>
@@ -36,7 +37,7 @@ class SourceManager;
 /// An opaque identifier used by SourceManager which refers to a
 /// source file (MemoryBuffer) along with its \#include path and \#line data.
 ///
-class FileID {
+class CLANG_ABI FileID {
   /// A mostly-opaque identifier, where 0 is "invalid", >0 is
   /// this module, and <-1 is something loaded from another module.
   int ID = 0;
@@ -91,7 +92,7 @@ using FileIDAndOffset = std::pair<FileID, unsigned>;
 /// where a SourceLocation points to the first byte of a lexer token.
 ///
 /// It is important that this type remains small. It is currently 32 bits wide.
-class SourceLocation {
+class CLANG_ABI SourceLocation {
   friend class ASTReader;
   friend class ASTWriter;
   friend class SourceManager;
@@ -221,7 +222,7 @@ inline bool operator>=(const SourceLocation &LHS, const SourceLocation &RHS) {
 /// that contains its endpoints, its begin SourceLocation points to the first
 /// byte of the first token and its end SourceLocation points to the first byte
 /// of the last token.
-class SourceRange {
+class CLANG_ABI SourceRange {
   SourceLocation B;
   SourceLocation E;
 
@@ -273,7 +274,7 @@ public:
 /// byte before the end SourceLocation. This allows representing a point
 /// CharRange [begin, begin) that points at the empty range right in front of
 /// the begin SourceLocation.
-class CharSourceRange {
+class CLANG_ABI CharSourceRange {
   SourceRange Range;
   bool IsTokenRange = false;
 
@@ -322,7 +323,7 @@ public:
 /// directives and is always the expansion point of a normal location.
 ///
 /// You can get a PresumedLoc from a SourceLocation with SourceManager.
-class PresumedLoc {
+class CLANG_ABI PresumedLoc {
   const char *Filename = nullptr;
   FileID ID;
   unsigned Line, Col;
@@ -386,7 +387,7 @@ public:
 /// This class does not guarantee the presence of either the SourceManager or
 /// a valid SourceLocation. Clients should use `isValid()` and `hasManager()`
 /// before calling the member functions.
-class FullSourceLoc : public SourceLocation {
+class CLANG_ABI FullSourceLoc : public SourceLocation {
   const SourceManager *SrcMgr = nullptr;
 
 public:

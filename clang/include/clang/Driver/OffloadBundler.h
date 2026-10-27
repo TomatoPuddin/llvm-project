@@ -17,6 +17,7 @@
 #ifndef LLVM_CLANG_DRIVER_OFFLOADBUNDLER_H
 #define LLVM_CLANG_DRIVER_OFFLOADBUNDLER_H
 
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/Support/Compression.h"
 #include "llvm/Support/Error.h"
@@ -26,7 +27,7 @@
 
 namespace clang {
 
-class OffloadBundlerConfig {
+class CLANG_ABI OffloadBundlerConfig {
 public:
   OffloadBundlerConfig();
 
@@ -52,7 +53,7 @@ public:
   llvm::SmallVector<std::string, 4> OutputFileNames;
 };
 
-class OffloadBundler {
+class CLANG_ABI OffloadBundler {
 public:
   const OffloadBundlerConfig &BundlerConfig;
 
@@ -75,7 +76,7 @@ public:
 ///  * Offload Kind - Host, OpenMP, or HIP
 ///  * Triple - Standard LLVM Triple
 ///  * TargetID (Optional) - target ID, like gfx906:xnack+ or sm_30
-struct OffloadTargetInfo {
+struct CLANG_ABI OffloadTargetInfo {
   llvm::StringRef OffloadKind;
   llvm::Triple Triple;
   llvm::StringRef TargetID;
@@ -95,7 +96,7 @@ struct OffloadTargetInfo {
 /// Check whether the bundle id is in the following format:
 /// <kind>-<triple>[-<target id>[:target features]]
 /// <triple> := <arch>-<vendor>-<os>-<env>
-bool checkOffloadBundleID(const llvm::StringRef Str);
+CLANG_ABI bool checkOffloadBundleID(const llvm::StringRef Str);
 } // namespace clang
 
 #endif // LLVM_CLANG_DRIVER_OFFLOADBUNDLER_H

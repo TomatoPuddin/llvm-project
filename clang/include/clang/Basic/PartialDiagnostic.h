@@ -18,6 +18,7 @@
 #include "clang/Basic/Diagnostic.h"
 #include "clang/Basic/LLVM.h"
 #include "clang/Basic/SourceLocation.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
 #include <cassert>
@@ -28,7 +29,7 @@
 
 namespace clang {
 
-class PartialDiagnostic : public StreamingDiagnostic {
+class CLANG_ABI PartialDiagnostic : public StreamingDiagnostic {
 private:
   // NOTE: Sema assumes that PartialDiagnostic is location-invariant
   // in the sense that its bits can be safely memcpy'ed and destructed

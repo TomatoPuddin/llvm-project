@@ -16,6 +16,7 @@
 #include "clang/DependencyScanning/DependencyScanningService.h"
 #include "clang/DependencyScanning/ModuleDepCollector.h"
 #include "clang/Frontend/PCHContainerOperations.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/IntrusiveRefCntPtr.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/MemoryBufferRef.h"
@@ -42,7 +43,7 @@ class DependencyScanningWorkerFilesystem;
 /// The worker computes the dependencies for the input files by preprocessing
 /// sources either using a fast mode where the source files are minimized, or
 /// using the regular processing run.
-class DependencyScanningWorker {
+class  CLANG_ABI DependencyScanningWorker {
 public:
   /// Construct a dependency scanning worker.
   ///

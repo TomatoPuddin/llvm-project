@@ -14,6 +14,7 @@
 #ifndef LLVM_CLANG_AST_ASTCONTEXT_H
 #define LLVM_CLANG_AST_ASTCONTEXT_H
 
+#include "clang/Support/Compiler.h"
 #include "clang/AST/ASTFwd.h"
 #include "clang/AST/CanonicalType.h"
 #include "clang/AST/CommentCommandTraits.h"
@@ -220,7 +221,7 @@ struct PFPField {
 
 /// Holds long-lived AST nodes (such as types and decls) that can be
 /// referred to throughout the semantic analysis of a file.
-class ASTContext : public RefCountedBase<ASTContext> {
+class CLANG_ABI ASTContext : public RefCountedBase<ASTContext> {
   friend class NestedNameSpecifier;
 
   mutable SmallVector<Type *, 0> Types;
@@ -405,7 +406,7 @@ class ASTContext : public RefCountedBase<ASTContext> {
 
   /// Representation of a "canonical" template template parameter that
   /// is used in canonical template names.
-  class CanonicalTemplateTemplateParm : public llvm::FoldingSetNode {
+  class CLANG_ABI CanonicalTemplateTemplateParm : public llvm::FoldingSetNode {
     TemplateTemplateParmDecl *Parm;
 
   public:
@@ -1107,7 +1108,7 @@ private:
   mutable comments::CommandTraits CommentCommandTraits;
 
   /// Iterator that visits import declarations.
-  class import_iterator {
+  class CLANG_ABI import_iterator {
     ImportDecl *Import = nullptr;
 
   public:

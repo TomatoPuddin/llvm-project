@@ -22,6 +22,7 @@
 #include "clang/Basic/Sanitizers.h"
 #include "clang/Basic/TargetCXXABI.h"
 #include "clang/Basic/Visibility.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/FloatingPointMode.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/BinaryFormat/DXContainer.h"
@@ -469,7 +470,7 @@ protected:
 
 /// Keeps track of the various options that can be
 /// enabled, which controls the dialect of C or C++ that is accepted.
-class LangOptions : public LangOptionsBase {
+class CLANG_ABI LangOptions : public LangOptionsBase {
 public:
   /// The used language standard.
   LangStandard::Kind LangStd;
@@ -834,7 +835,7 @@ public:
 
 /// Floating point control options
 class FPOptionsOverride;
-class FPOptions {
+class CLANG_ABI FPOptions {
 public:
   // We start by defining the layout.
   using storage_type = uint32_t;
@@ -993,7 +994,7 @@ public:
 /// NOTE: This type is serialized into the AST format (e.g. for defaulted
 /// functions). When adding a new field here or in FPOptions, ensure that the
 /// AST VERSION_MAJOR is bumped if it changes the layout or size.
-class FPOptionsOverride {
+class CLANG_ABI FPOptionsOverride {
   FPOptions Options = FPOptions::getFromOpaqueInt(0);
   FPOptions::storage_type OverrideMask = 0;
 
@@ -1123,7 +1124,7 @@ enum class AtomicOptionKind {
   LANGOPT_ATOMIC_OPTION_LAST = IgnoreDenormalMode,
 };
 
-struct AtomicOptions {
+struct CLANG_ABI AtomicOptions {
   // Bitfields for each option.
   unsigned remote_memory : 1;
   unsigned fine_grained_memory : 1;

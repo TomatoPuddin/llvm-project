@@ -99,7 +99,7 @@ private:
 };
 
 /// Manages the set of modules loaded by an AST reader.
-class ModuleManager {
+class CLANG_ABI ModuleManager {
   /// The chain of AST files, in the order in which we started to load
   /// them.
   SmallVector<std::unique_ptr<ModuleFile>, 2> Chain;

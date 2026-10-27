@@ -10,6 +10,7 @@
 #define LLVM_CLANG_DEPENDENCYSCANNING_DEPENDENCYSCANNINGSERVICE_H
 
 #include "clang/DependencyScanning/DependencyScanningFilesystem.h"
+#include "clang/Support/Compiler.h"
 #include "clang/DependencyScanning/InProcessModuleCache.h"
 #include "llvm/ADT/BitmaskEnum.h"
 
@@ -102,7 +103,7 @@ struct DependencyScanningServiceOptions {
 
 /// The dependency scanning service contains shared configuration and state that
 /// is used by the individual dependency scanning workers.
-class DependencyScanningService {
+class CLANG_ABI DependencyScanningService {
 public:
   explicit DependencyScanningService(DependencyScanningServiceOptions Opts)
       : Opts(std::move(Opts)) {}

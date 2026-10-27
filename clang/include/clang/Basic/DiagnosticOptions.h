@@ -10,6 +10,7 @@
 #define LLVM_CLANG_BASIC_DIAGNOSTICOPTIONS_H
 
 #include "clang/Basic/LLVM.h"
+#include "clang/Support/Compiler.h"
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -76,7 +77,7 @@ inline DiagnosticLevelMask operator&(DiagnosticLevelMask LHS,
 raw_ostream& operator<<(raw_ostream& Out, DiagnosticLevelMask M);
 
 /// Options for controlling the compiler diagnostics engine.
-class DiagnosticOptions {
+class CLANG_ABI DiagnosticOptions {
   friend bool ParseDiagnosticArgs(DiagnosticOptions &, llvm::opt::ArgList &,
                                   clang::DiagnosticsEngine *, bool);
 

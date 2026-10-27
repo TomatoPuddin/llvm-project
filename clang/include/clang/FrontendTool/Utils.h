@@ -14,6 +14,7 @@
 #ifndef LLVM_CLANG_FRONTENDTOOL_UTILS_H
 #define LLVM_CLANG_FRONTENDTOOL_UTILS_H
 
+#include "clang/Support/Compiler.h"
 #include <memory>
 
 namespace clang {
@@ -31,7 +32,7 @@ std::unique_ptr<FrontendAction> CreateFrontendAction(CompilerInstance &CI);
 /// compiler invocation object in the given compiler instance.
 ///
 /// \return - True on success.
-bool ExecuteCompilerInvocation(CompilerInstance *Clang);
+CLANG_ABI bool ExecuteCompilerInvocation(CompilerInstance *Clang);
 
 }  // end namespace clang
 

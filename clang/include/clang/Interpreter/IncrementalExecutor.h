@@ -15,6 +15,7 @@
 
 #include "llvm/Support/CodeGen.h"
 #include "llvm/Support/Error.h"
+#include "clang/Support/Compiler.h"
 
 namespace llvm {
 namespace orc {
@@ -31,7 +32,7 @@ namespace driver {
 class Compilation;
 } // namespace driver
 
-class IncrementalExecutorBuilder {
+class CLANG_ABI IncrementalExecutorBuilder {
 public:
   /// Indicates whether out-of-process JIT execution is enabled.
   bool IsOutOfProcess = false;
@@ -72,7 +73,7 @@ private:
 
 struct PartialTranslationUnit;
 
-class IncrementalExecutor {
+class CLANG_ABI IncrementalExecutor {
 public:
   enum SymbolNameKind { IRName, LinkerName };
 

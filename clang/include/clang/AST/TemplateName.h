@@ -13,6 +13,7 @@
 #ifndef LLVM_CLANG_AST_TEMPLATENAME_H
 #define LLVM_CLANG_AST_TEMPLATENAME_H
 
+#include "clang/Support/Compiler.h"
 #include "clang/AST/DependenceFlags.h"
 #include "clang/AST/NestedNameSpecifierBase.h"
 #include "clang/Basic/LLVM.h"
@@ -219,7 +220,7 @@ struct DefaultArguments {
 /// specifier in the typedef. "apply" is a nested template, and can
 /// only be understood in the context of a template instantiation,
 /// hence is represented as a dependent template name.
-class TemplateName {
+class CLANG_ABI TemplateName {
   // NameDecl is either a TemplateDecl or a UsingShadowDecl depending on the
   // NameKind.
   // !! There is no free low bits in 32-bit builds to discriminate more than 4
@@ -409,12 +410,12 @@ public:
 
 /// Insertion operator for diagnostics.  This allows sending TemplateName's
 /// into a diagnostic with <<.
-const StreamingDiagnostic &operator<<(const StreamingDiagnostic &DB,
+CLANG_ABI const StreamingDiagnostic &operator<<(const StreamingDiagnostic &DB,
                                       TemplateName N);
 
 /// A structure for storing the information associated with a
 /// substituted template template parameter.
-class SubstTemplateTemplateParmStorage
+class CLANG_ABI SubstTemplateTemplateParmStorage
   : public UncommonTemplateNameStorage, public llvm::FoldingSetNode {
   friend class ASTContext;
 
@@ -458,7 +459,7 @@ public:
                       UnsignedOrNone PackIndex, bool Final);
 };
 
-class DeducedTemplateStorage : public UncommonTemplateNameStorage,
+class CLANG_ABI DeducedTemplateStorage : public UncommonTemplateNameStorage,
                                public llvm::FoldingSetNode {
   friend class ASTContext;
 
@@ -501,7 +502,7 @@ inline TemplateName TemplateName::getUnderlying() const {
 /// semantic meaning. In this manner, it is to TemplateName what
 /// ElaboratedType is to Type, providing extra syntactic sugar
 /// for downstream clients.
-class QualifiedTemplateName : public llvm::FoldingSetNode {
+class CLANG_ABI QualifiedTemplateName : public llvm::FoldingSetNode {
   friend class ASTContext;
 
   /// The nested name specifier that qualifies the template name.
@@ -550,7 +551,7 @@ public:
   }
 };
 
-struct IdentifierOrOverloadedOperator {
+struct CLANG_ABI IdentifierOrOverloadedOperator {
   IdentifierOrOverloadedOperator() = default;
   IdentifierOrOverloadedOperator(const IdentifierInfo *II);
   IdentifierOrOverloadedOperator(OverloadedOperatorKind OOK);
@@ -587,7 +588,7 @@ private:
 /// DependentTemplateName can refer to "MetaFun::template apply",
 /// where "MetaFun::" is the nested name specifier and "apply" is the
 /// template name referenced. The "template" keyword is implied.
-class DependentTemplateStorage {
+class CLANG_ABI DependentTemplateStorage {
   /// The nested name specifier that qualifies the template
   /// name.
   ///

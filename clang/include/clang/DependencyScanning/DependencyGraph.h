@@ -9,6 +9,7 @@
 #ifndef LLVM_CLANG_DEPENDENCYSCANNING_DEPENDENCYGRAPH_H
 #define LLVM_CLANG_DEPENDENCYSCANNING_DEPENDENCYGRAPH_H
 
+#include "clang/Support/Compiler.h"
 #include "clang/Basic/LLVM.h"
 #include "clang/Basic/Module.h"
 #include "clang/Frontend/CompilerInvocation.h"
@@ -75,7 +76,7 @@ struct P1689ModuleInfo {
   ModuleType Type = ModuleType::NamedCXXModule;
 };
 
-struct ModuleDeps {
+struct CLANG_ABI ModuleDeps {
   /// The identifier of the module.
   ModuleID ID;
 

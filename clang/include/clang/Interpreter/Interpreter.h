@@ -18,6 +18,7 @@
 #include "clang/Interpreter/IncrementalExecutor.h"
 #include "clang/Interpreter/PartialTranslationUnit.h"
 #include "clang/Interpreter/Value.h"
+#include "clang/Support/Compiler.h"
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ExecutionEngine/JITSymbol.h"
@@ -47,7 +48,7 @@ class IncrementalParser;
 class IncrementalCUDADeviceParser;
 
 /// Create a pre-configured \c CompilerInstance for incremental processing.
-class IncrementalCompilerBuilder {
+class CLANG_ABI IncrementalCompilerBuilder {
   using DriverCompilationFn = llvm::Error(const driver::Compilation &);
 
 public:
@@ -95,7 +96,7 @@ class IncrementalAction;
 class InProcessPrintingASTConsumer;
 
 /// Provides top-level interfaces for incremental compilation and execution.
-class Interpreter {
+class CLANG_ABI Interpreter {
   friend class Value;
   friend InProcessPrintingASTConsumer;
 

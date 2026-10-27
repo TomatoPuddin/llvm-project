@@ -100,7 +100,7 @@ struct AssociatedConstraint {
 };
 
 /// The top declaration context.
-class TranslationUnitDecl : public Decl,
+class CLANG_ABI TranslationUnitDecl : public Decl,
                             public DeclContext,
                             public Redeclarable<TranslationUnitDecl> {
   using redeclarable_base = Redeclarable<TranslationUnitDecl>;
@@ -162,7 +162,7 @@ public:
 
 /// Represents a `#pragma comment` line. Always a child of
 /// TranslationUnitDecl.
-class PragmaCommentDecl final
+class CLANG_ABI PragmaCommentDecl final
     : public Decl,
       private llvm::TrailingObjects<PragmaCommentDecl, char> {
   friend class ASTDeclReader;
@@ -196,7 +196,7 @@ public:
 
 /// Represents a `#pragma detect_mismatch` line. Always a child of
 /// TranslationUnitDecl.
-class PragmaDetectMismatchDecl final
+class CLANG_ABI PragmaDetectMismatchDecl final
     : public Decl,
       private llvm::TrailingObjects<PragmaDetectMismatchDecl, char> {
   friend class ASTDeclReader;
@@ -244,7 +244,7 @@ public:
 ///
 /// The declaration at #3 finds it is a redeclaration of \c N::f through
 /// lookup in the extern "C" context.
-class ExternCContextDecl : public Decl, public DeclContext {
+class CLANG_ABI ExternCContextDecl : public Decl, public DeclContext {
   explicit ExternCContextDecl(TranslationUnitDecl *TU)
     : Decl(ExternCContext, TU, SourceLocation()),
       DeclContext(ExternCContext) {}
@@ -271,7 +271,7 @@ public:
 ///
 /// Note that not every NamedDecl is actually named (e.g., a struct might
 /// be anonymous), and not every name is an identifier.
-class NamedDecl : public Decl {
+class CLANG_ABI NamedDecl : public Decl {
   /// The name of this declaration, which is typically a normal
   /// identifier but may also be a special kind of name (C++
   /// constructor, Objective-C selector, etc.)
@@ -521,7 +521,7 @@ inline raw_ostream &operator<<(raw_ostream &OS, const NamedDecl &ND) {
 /// defined at.  For normal labels, the location of the decl is the same as the
 /// location of the statement.  For GNU local labels (__label__), the decl
 /// location is where the __label__ is.
-class LabelDecl : public NamedDecl {
+class CLANG_ABI LabelDecl : public NamedDecl {
   LabelStmt *TheStmt;
   StringRef MSAsmName;
   bool MSAsmNameResolved = false;
@@ -570,7 +570,7 @@ public:
 ///
 /// FIXME: Move `NamespaceBaseDecl` and `NamespaceDecl` to "DeclCXX.h" or
 /// explain why not moving.
-class NamespaceBaseDecl : public NamedDecl {
+class CLANG_ABI NamespaceBaseDecl : public NamedDecl {
 protected:
   using NamedDecl::NamedDecl;
 
@@ -587,7 +587,7 @@ public:
 };
 
 /// Represent a C++ namespace.
-class NamespaceDecl : public NamespaceBaseDecl,
+class CLANG_ABI NamespaceDecl : public NamespaceBaseDecl,
                       public DeclContext,
                       public Redeclarable<NamespaceDecl> {
   /// The starting location of the source range, pointing
@@ -709,7 +709,7 @@ class VarDecl;
 /// Represent the declaration of a variable (in which case it is
 /// an lvalue) a function (in which case it is a function designator) or
 /// an enum constant.
-class ValueDecl : public NamedDecl {
+class CLANG_ABI ValueDecl : public NamedDecl {
   QualType DeclType;
 
   void anchor() override;
@@ -750,7 +750,7 @@ public:
 
 /// A struct with extended info about a syntactic
 /// name qualifier, to be used for the case of out-of-line declarations.
-struct QualifierInfo {
+struct CLANG_ABI QualifierInfo {
   NestedNameSpecifierLoc QualifierLoc;
 
   /// The number of "outer" template parameter lists.
@@ -777,7 +777,7 @@ struct QualifierInfo {
 
 /// Represents a ValueDecl that came out of a declarator.
 /// Contains type source information through TypeSourceInfo.
-class DeclaratorDecl : public ValueDecl {
+class CLANG_ABI DeclaratorDecl : public ValueDecl {
   // A struct representing a TInfo, a trailing requires-clause and a syntactic
   // qualifier, to be used for the (uncommon) case of out-of-line declarations
   // and constrained function decls.
@@ -929,7 +929,7 @@ struct EvaluatedStmt {
 };
 
 /// Represents a variable declaration or definition.
-class VarDecl : public DeclaratorDecl, public Redeclarable<VarDecl> {
+class CLANG_ABI VarDecl : public DeclaratorDecl, public Redeclarable<VarDecl> {
 public:
   /// Initialization styles.
   enum InitializationStyle {
@@ -1774,7 +1774,7 @@ enum class ImplicitParamKind {
   Other,
 };
 
-class ImplicitParamDecl : public VarDecl {
+class CLANG_ABI ImplicitParamDecl : public VarDecl {
   void anchor() override;
 
 protected:
@@ -1816,7 +1816,7 @@ public:
 };
 
 /// Represents a parameter to a function.
-class ParmVarDecl : public VarDecl {
+class CLANG_ABI ParmVarDecl : public VarDecl {
 public:
   enum { MaxFunctionScopeDepth = 255 };
   enum { MaxFunctionScopeIndex = 255 };
@@ -2024,7 +2024,7 @@ enum class MultiVersionKind {
 /// contains all of the information known about the function. Other,
 /// previous declarations of the function are available via the
 /// getPreviousDecl() chain.
-class FunctionDecl : public DeclaratorDecl,
+class CLANG_ABI FunctionDecl : public DeclaratorDecl,
                      public DeclContext,
                      public Redeclarable<FunctionDecl> {
   // This class stores some data in DeclContext::FunctionDeclBits
@@ -3201,7 +3201,7 @@ public:
 };
 
 /// Represents a member of a struct/union/class.
-class FieldDecl : public DeclaratorDecl, public Mergeable<FieldDecl> {
+class CLANG_ABI FieldDecl : public DeclaratorDecl, public Mergeable<FieldDecl> {
   /// The kinds of value we can store in StorageKind.
   ///
   /// Note that this is compatible with InClassInitStyle except for
@@ -3462,7 +3462,7 @@ public:
 /// that is defined.  For example, in "enum X {a,b}", each of a/b are
 /// EnumConstantDecl's, X is an instance of EnumDecl, and the type of a/b is a
 /// TagType for the X EnumDecl.
-class EnumConstantDecl : public ValueDecl,
+class CLANG_ABI EnumConstantDecl : public ValueDecl,
                          public Mergeable<EnumConstantDecl>,
                          public APIntStorage {
   Stmt *Init; // an integer constant expression
@@ -3507,7 +3507,7 @@ public:
 
 /// Represents a field injected from an anonymous union/struct into the parent
 /// scope. These are always implicit.
-class IndirectFieldDecl : public ValueDecl,
+class CLANG_ABI IndirectFieldDecl : public ValueDecl,
                           public Mergeable<IndirectFieldDecl> {
   NamedDecl **Chaining;
   unsigned ChainingSize;
@@ -3554,7 +3554,7 @@ public:
 };
 
 /// Represents a declaration of a type.
-class TypeDecl : public NamedDecl {
+class CLANG_ABI TypeDecl : public NamedDecl {
   friend class ASTContext;
   friend class ASTReader;
 
@@ -3603,7 +3603,7 @@ public:
 };
 
 /// Base class for declarations which introduce a typedef-name.
-class TypedefNameDecl : public TypeDecl, public Redeclarable<TypedefNameDecl> {
+class CLANG_ABI TypedefNameDecl : public TypeDecl, public Redeclarable<TypedefNameDecl> {
   struct alignas(8) ModedTInfo {
     TypeSourceInfo *first;
     QualType second;
@@ -3708,7 +3708,7 @@ private:
 
 /// Represents the declaration of a typedef-name via the 'typedef'
 /// type specifier.
-class TypedefDecl : public TypedefNameDecl {
+class CLANG_ABI TypedefDecl : public TypedefNameDecl {
   TypedefDecl(ASTContext &C, DeclContext *DC, SourceLocation StartLoc,
               SourceLocation IdLoc, const IdentifierInfo *Id,
               TypeSourceInfo *TInfo)
@@ -3729,7 +3729,7 @@ public:
 
 /// Represents the declaration of a typedef-name via a C++11
 /// alias-declaration.
-class TypeAliasDecl : public TypedefNameDecl {
+class CLANG_ABI TypeAliasDecl : public TypedefNameDecl {
   /// The template for which this is the pattern, if any.
   TypeAliasTemplateDecl *Template;
 
@@ -3756,7 +3756,7 @@ public:
 };
 
 /// Represents the declaration of a struct/union/class/enum.
-class TagDecl : public TypeDecl,
+class CLANG_ABI TagDecl : public TypeDecl,
                 public DeclContext,
                 public Redeclarable<TagDecl> {
   // This class stores some data in DeclContext::TagDeclBits
@@ -4052,7 +4052,7 @@ public:
 /// Represents an enum.  In C++11, enums can be forward-declared
 /// with a fixed underlying type, and in C we allow them to be forward-declared
 /// with no underlying type as an extension.
-class EnumDecl : public TagDecl {
+class CLANG_ABI EnumDecl : public TagDecl {
   // This class stores some data in DeclContext::EnumDeclBits
   // to save some space. Use the provided accessors to access it.
 
@@ -4366,7 +4366,7 @@ enum class RecordArgPassingKind {
 ///   struct X;                  // Forward declaration, no "body".
 ///   union Y { int A, B; };     // Has body with members A and B (FieldDecls).
 /// This decl will be marked invalid if *any* members are invalid.
-class RecordDecl : public TagDecl {
+class CLANG_ABI RecordDecl : public TagDecl {
   // This class stores some data in DeclContext::RecordDeclBits
   // to save some space. Use the provided accessors to access it.
 public:
@@ -4637,7 +4637,7 @@ private:
   void setODRHash(unsigned Hash) { RecordDeclBits.ODRHash = Hash; }
 };
 
-class FileScopeAsmDecl : public Decl {
+class CLANG_ABI FileScopeAsmDecl : public Decl {
   Expr *AsmString;
   SourceLocation RParenLoc;
 
@@ -4676,7 +4676,7 @@ public:
 ///
 /// \note This is used in libInterpreter, clang -cc1 -fincremental-extensions
 /// and in tools such as clang-repl.
-class TopLevelStmtDecl : public Decl, public DeclContext {
+class CLANG_ABI TopLevelStmtDecl : public Decl, public DeclContext {
   friend class ASTDeclReader;
   friend class ASTDeclWriter;
 
@@ -4713,7 +4713,7 @@ public:
 /// Represents a block literal declaration, which is like an
 /// unnamed FunctionDecl.  For example:
 /// ^{ statement-body }   or   ^(int arg1, float arg2){ statement-body }
-class BlockDecl : public Decl, public DeclContext {
+class CLANG_ABI BlockDecl : public Decl, public DeclContext {
   // This class stores some data in DeclContext::BlockDeclBits
   // to save some space. Use the provided accessors to access it.
 public:
@@ -4917,7 +4917,7 @@ public:
 /// used to generate a target dependent function definition without losing
 /// association with the original statements. See SYCLKernelCallStmt as an
 /// example.
-class OutlinedFunctionDecl final
+class CLANG_ABI OutlinedFunctionDecl final
     : public Decl,
       public DeclContext,
       private llvm::TrailingObjects<OutlinedFunctionDecl, ImplicitParamDecl *> {
@@ -4982,7 +4982,7 @@ public:
 };
 
 /// Represents the body of a CapturedStmt, and serves as its DeclContext.
-class CapturedDecl final
+class CLANG_ABI CapturedDecl final
     : public Decl,
       public DeclContext,
       private llvm::TrailingObjects<CapturedDecl, ImplicitParamDecl *> {
@@ -5093,7 +5093,7 @@ public:
 ///
 /// Import declarations can also be implicitly generated from
 /// \#include/\#import directives.
-class ImportDecl final : public Decl,
+class CLANG_ABI ImportDecl final : public Decl,
                          llvm::TrailingObjects<ImportDecl, SourceLocation> {
   friend class ASTContext;
   friend class ASTDeclReader;
@@ -5173,7 +5173,7 @@ public:
 /// \code
 ///   export void foo();
 /// \endcode
-class ExportDecl final : public Decl, public DeclContext {
+class CLANG_ABI ExportDecl final : public Decl, public DeclContext {
   LLVM_DECLARE_VIRTUAL_ANCHOR_FUNCTION();
 
 private:
@@ -5220,7 +5220,7 @@ public:
 };
 
 /// Represents an empty-declaration.
-class EmptyDecl : public Decl {
+class CLANG_ABI EmptyDecl : public Decl {
   EmptyDecl(DeclContext *DC, SourceLocation L) : Decl(Empty, DC, L) {}
 
   virtual void anchor();
@@ -5235,7 +5235,7 @@ public:
 };
 
 /// HLSLBufferDecl - Represent a cbuffer or tbuffer declaration.
-class HLSLBufferDecl final : public NamedDecl, public DeclContext {
+class CLANG_ABI HLSLBufferDecl final : public NamedDecl, public DeclContext {
   /// LBraceLoc - The ending location of the source range.
   SourceLocation LBraceLoc;
   /// RBraceLoc - The ending location of the source range.
@@ -5321,7 +5321,7 @@ public:
   friend class ASTDeclWriter;
 };
 
-class HLSLRootSignatureDecl final
+class CLANG_ABI HLSLRootSignatureDecl final
     : public NamedDecl,
       private llvm::TrailingObjects<HLSLRootSignatureDecl,
                                     llvm::hlsl::rootsig::RootElement> {
@@ -5432,14 +5432,14 @@ static constexpr StringRef getOpenMPVariantManglingSeparatorStr() {
 
 /// Returns whether the given FunctionDecl has an __arm[_locally]_streaming
 /// attribute.
-bool IsArmStreamingFunction(const FunctionDecl *FD,
+CLANG_ABI bool IsArmStreamingFunction(const FunctionDecl *FD,
                             bool IncludeLocallyStreaming);
 
 /// Returns whether the given FunctionDecl has Arm ZA state.
-bool hasArmZAState(const FunctionDecl *FD);
+CLANG_ABI bool hasArmZAState(const FunctionDecl *FD);
 
 /// Returns whether the given FunctionDecl has Arm ZT0 state.
-bool hasArmZT0State(const FunctionDecl *FD);
+CLANG_ABI bool hasArmZT0State(const FunctionDecl *FD);
 
 } // namespace clang
 

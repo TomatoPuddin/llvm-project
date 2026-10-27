@@ -16,6 +16,7 @@
 
 #include "clang/Basic/Diagnostic.h"
 #include "clang/Basic/LLVM.h"
+#include "clang/Support/Compiler.h"
 #include "llvm/Support/VirtualFileSystem.h"
 #include <memory>
 #include <string>
@@ -67,7 +68,7 @@ struct CreateInvocationOptions {
 ///
 /// May return nullptr if an invocation could not be determined.
 /// See CreateInvocationOptions::RecoverOnError to try harder!
-std::unique_ptr<CompilerInvocation>
+CLANG_ABI std::unique_ptr<CompilerInvocation>
 createInvocation(ArrayRef<const char *> Args,
                  CreateInvocationOptions Opts = {});
 

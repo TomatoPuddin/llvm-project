@@ -56,7 +56,7 @@ class UnresolvedUsingTypenameDecl;
 ///
 /// A client should use the TypeLoc subclasses through castAs()/getAs()
 /// in order to get at the actual information.
-class TypeLoc {
+class CLANG_ABI TypeLoc {
 protected:
   // The correctness of this relies on the property that, for Type *Ty,
   //   QualType(Ty, 0).getAsOpaquePtr() == (void*) Ty
@@ -271,7 +271,7 @@ inline TypeLoc TypeSourceInfo::getTypeLoc() const {
 
 /// Wrapper of type source information for a type with
 /// no direct qualifiers.
-class UnqualTypeLoc : public TypeLoc {
+class CLANG_ABI UnqualTypeLoc : public TypeLoc {
 public:
   UnqualTypeLoc() = default;
   UnqualTypeLoc(const Type *Ty, void *Data) : TypeLoc(Ty, Data) {}
@@ -297,7 +297,7 @@ private:
 ///
 /// Currently, we intentionally do not provide source location for
 /// type qualifiers.
-class QualifiedTypeLoc : public TypeLoc {
+class CLANG_ABI QualifiedTypeLoc : public TypeLoc {
 public:
   SourceRange getLocalSourceRange() const { return {}; }
 
@@ -534,7 +534,7 @@ struct TypeSpecLocInfo {
 
 /// A reasonable base class for TypeLocs that correspond to
 /// types that are written as a type-specifier.
-class TypeSpecTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
+class CLANG_ABI TypeSpecTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
                                                TypeSpecTypeLoc,
                                                Type,
                                                TypeSpecLocInfo> {
@@ -571,7 +571,7 @@ struct BuiltinLocInfo {
 };
 
 /// Wrapper for source info for builtin types.
-class BuiltinTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
+class CLANG_ABI BuiltinTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
                                               BuiltinTypeLoc,
                                               BuiltinType,
                                               BuiltinLocInfo> {

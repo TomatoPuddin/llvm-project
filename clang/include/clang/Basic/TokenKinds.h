@@ -14,6 +14,7 @@
 #ifndef LLVM_CLANG_BASIC_TOKENKINDS_H
 #define LLVM_CLANG_BASIC_TOKENKINDS_H
 
+#include "clang/Support/Compiler.h"
 #include "llvm/ADT/DenseMapInfo.h"
 #include "llvm/Support/Compiler.h"
 
@@ -156,10 +157,10 @@ inline bool isLiteral(TokenKind K) {
 }
 
 /// Return true if this is any of tok::annot_* kinds.
-bool isAnnotation(TokenKind K);
+CLANG_ABI bool isAnnotation(TokenKind K);
 
 /// Return true if this is an annotation token representing a pragma.
-bool isPragmaAnnotation(TokenKind K);
+CLANG_ABI bool isPragmaAnnotation(TokenKind K);
 
 inline constexpr bool isRegularKeywordAttribute(TokenKind K) {
   return (false

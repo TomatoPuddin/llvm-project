@@ -14,6 +14,7 @@
 #ifndef LLVM_CLANG_BASIC_DIAGNOSTIC_H
 #define LLVM_CLANG_BASIC_DIAGNOSTIC_H
 
+#include "clang/Support/Compiler.h"
 #include "clang/Basic/DiagnosticIDs.h"
 #include "clang/Basic/DiagnosticOptions.h"
 #include "clang/Basic/OptionalUnsigned.h"
@@ -192,7 +193,7 @@ struct DiagnosticStorage {
 
 /// An allocator for DiagnosticStorage objects, which uses a small cache to
 /// objects, used to reduce malloc()/free() traffic for partial diagnostics.
-class DiagStorageAllocator {
+class CLANG_ABI DiagStorageAllocator {
   static const unsigned NumCached = 16;
   DiagnosticStorage Cached[NumCached];
   DiagnosticStorage *FreeList[NumCached];
@@ -231,7 +232,7 @@ public:
 /// as errors" and passes them off to the DiagnosticConsumer for reporting to
 /// the user. DiagnosticsEngine is tied to one translation unit and one
 /// SourceManager.
-class DiagnosticsEngine : public RefCountedBase<DiagnosticsEngine> {
+class CLANG_ABI DiagnosticsEngine : public RefCountedBase<DiagnosticsEngine> {
 public:
   /// The level of the diagnostic, after it has been through mapping.
   // FIXME: Make this an alias for DiagnosticIDs::Level as soon as
@@ -1084,7 +1085,7 @@ protected:
 /// meaningless to ask whether a particular scope triggered an error message,
 /// because error messages outside that scope can mark things invalid (or cause
 /// us to reach an error limit), which can suppress errors within that scope.
-class DiagnosticErrorTrap {
+class CLANG_ABI DiagnosticErrorTrap {
   DiagnosticsEngine &Diag;
   unsigned NumErrors;
   unsigned NumUnrecoverableErrors;
@@ -1123,7 +1124,7 @@ public:
 /// const StreamingDiagnostic&
 /// operator<<(const StreamingDiagnostic&, NewArgType);
 ///
-class StreamingDiagnostic {
+class CLANG_ABI StreamingDiagnostic {
 public:
   using DiagStorageAllocator = clang::DiagStorageAllocator;
 
@@ -1241,7 +1242,7 @@ protected:
 /// This ensures that compilers with somewhat reasonable optimizers will promote
 /// the common fields to registers, eliminating increments of the NumArgs field,
 /// for example.
-class DiagnosticBuilder : public StreamingDiagnostic {
+class CLANG_ABI DiagnosticBuilder : public StreamingDiagnostic {
   friend class DiagnosticsEngine;
   friend class PartialDiagnostic;
   friend class Diagnostic;
@@ -1575,7 +1576,7 @@ operator<<(const StreamingDiagnostic &DB, const std::optional<FixItHint> &Opt) {
 /// context-sensitive keyword.
 using DiagNullabilityKind = std::pair<NullabilityKind, bool>;
 
-const StreamingDiagnostic &operator<<(const StreamingDiagnostic &DB,
+CLANG_ABI const StreamingDiagnostic &operator<<(const StreamingDiagnostic &DB,
                                       DiagNullabilityKind nullability);
 
 inline DiagnosticBuilder DiagnosticsEngine::Report(SourceLocation Loc,
@@ -1583,7 +1584,7 @@ inline DiagnosticBuilder DiagnosticsEngine::Report(SourceLocation Loc,
   return DiagnosticBuilder(this, Loc, DiagID);
 }
 
-const StreamingDiagnostic &operator<<(const StreamingDiagnostic &DB,
+CLANG_ABI const StreamingDiagnostic &operator<<(const StreamingDiagnostic &DB,
                                       llvm::Error &&E);
 
 inline DiagnosticBuilder DiagnosticsEngine::Report(unsigned DiagID) {
@@ -1597,7 +1598,7 @@ inline DiagnosticBuilder DiagnosticsEngine::Report(unsigned DiagID) {
 /// A little helper class (which is basically a smart pointer that forwards
 /// info from DiagnosticsEngine and DiagnosticStorage) that allows clients to
 /// enquire about the diagnostic.
-class Diagnostic {
+class CLANG_ABI Diagnostic {
   const DiagnosticsEngine *DiagObj;
   SourceLocation DiagLoc;
   unsigned DiagID;
@@ -1721,7 +1722,7 @@ public:
  * Represents a diagnostic in a form that can be retained until its
  * corresponding source manager is destroyed.
  */
-class StoredDiagnostic {
+class CLANG_ABI StoredDiagnostic {
   unsigned ID;
   DiagnosticsEngine::Level Level;
   FullSourceLoc Loc;
@@ -1767,12 +1768,12 @@ public:
 };
 
 // Simple debug printing of StoredDiagnostic.
-llvm::raw_ostream &operator<<(llvm::raw_ostream &OS, const StoredDiagnostic &);
+CLANG_ABI llvm::raw_ostream &operator<<(llvm::raw_ostream &OS, const StoredDiagnostic &);
 
 /// Abstract interface, implemented by clients of the front-end, which
 /// formats and prints fully processed diagnostics. The destructor must be
 /// called even with -disable-free.
-class DiagnosticConsumer {
+class CLANG_ABI DiagnosticConsumer {
 protected:
   unsigned NumWarnings = 0; ///< Number of warnings reported
   unsigned NumErrors = 0;   ///< Number of errors reported
@@ -1823,7 +1824,7 @@ public:
 };
 
 /// A diagnostic client that ignores all diagnostics.
-class IgnoringDiagConsumer : public DiagnosticConsumer {
+class CLANG_ABI IgnoringDiagConsumer : public DiagnosticConsumer {
   virtual void anchor();
 
   void HandleDiagnostic(DiagnosticsEngine::Level DiagLevel,
@@ -1835,7 +1836,7 @@ class IgnoringDiagConsumer : public DiagnosticConsumer {
 /// Diagnostic consumer that forwards diagnostics along to an
 /// existing, already-initialized diagnostic consumer.
 ///
-class ForwardingDiagnosticConsumer : public DiagnosticConsumer {
+class CLANG_ABI ForwardingDiagnosticConsumer : public DiagnosticConsumer {
   DiagnosticConsumer &Target;
 
 public:
@@ -1873,12 +1874,12 @@ const char ToggleHighlight = 127;
 
 /// ProcessWarningOptions - Initialize the diagnostic client and process the
 /// warning options specified on the command line.
-void ProcessWarningOptions(DiagnosticsEngine &Diags,
+CLANG_ABI void ProcessWarningOptions(DiagnosticsEngine &Diags,
                            const DiagnosticOptions &Opts,
                            llvm::vfs::FileSystem &VFS, bool ReportDiags = true);
-void EscapeStringForDiagnostic(StringRef Str, SmallVectorImpl<char> &OutStr);
-SmallString<16> EscapeSingleCodepointForDiagnostic(StringRef Str);
-SmallString<16> EscapeSingleCodepointForDiagnostic(llvm::UTF32 CP);
+CLANG_ABI void EscapeStringForDiagnostic(StringRef Str, SmallVectorImpl<char> &OutStr);
+CLANG_ABI SmallString<16> EscapeSingleCodepointForDiagnostic(StringRef Str);
+CLANG_ABI SmallString<16> EscapeSingleCodepointForDiagnostic(llvm::UTF32 CP);
 } // namespace clang
 
 #endif // LLVM_CLANG_BASIC_DIAGNOSTIC_H
