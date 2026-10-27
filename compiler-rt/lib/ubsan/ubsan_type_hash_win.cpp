@@ -17,7 +17,8 @@
 
 #include "sanitizer_common/sanitizer_common.h"
 
-#include <typeinfo>
+// Use the native RTTI layout without MSVC STL auto-link directives.
+#include <vcruntime_typeinfo.h>
 
 struct CompleteObjectLocator {
   int is_image_relative;

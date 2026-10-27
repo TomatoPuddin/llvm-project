@@ -214,8 +214,10 @@ struct InternalDeadlockDetector {
 };
 // This variable is used by the __tls_get_addr interceptor, so cannot use the
 // global-dynamic TLS model, as that would result in crashes.
-__attribute__((tls_model("initial-exec"))) static THREADLOCAL
-    InternalDeadlockDetector deadlock_detector;
+#if !SANITIZER_WINDOWS
+__attribute__((tls_model("initial-exec")))
+#endif
+static THREADLOCAL InternalDeadlockDetector deadlock_detector;
 
 void CheckedMutex::LockImpl(uptr pc) { deadlock_detector.Lock(type_, pc); }
 

@@ -708,12 +708,21 @@ if(COMPILER_RT_USE_LLVM_UNWINDER)
   endif()
 endif()
 
+set(COMPILER_RT_CXX_SYSTEM_INCLUDE_FLAG "-isystem")
+if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+  set(COMPILER_RT_CXX_SYSTEM_INCLUDE_FLAG "/imsvc")
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # libc++'s C header wrappers must precede Clang's builtin C headers.
+    set(COMPILER_RT_CXX_SYSTEM_INCLUDE_FLAG "/clang:-isystem")
+  endif()
+endif()
+
 if (COMPILER_RT_CXX_LIBRARY STREQUAL "libcxx")
   # We are using the in-tree libc++ so avoid including the default one.
   append_list_if(COMPILER_RT_HAS_NOSTDINCXX_FLAG -nostdinc++ COMPILER_RT_COMMON_CFLAGS)
   append_list_if(COMPILER_RT_HAS_NOSTDLIBXX_FLAG -nostdlib++ COMPILER_RT_COMMON_LINK_FLAGS)
   # Use the in-tree libc++ through explicit include and library paths.
-  set(COMPILER_RT_CXX_CFLAGS "$<$<TARGET_EXISTS:cxx-headers>:$<IF:$<BOOL:${MSVC}>,/imsvc,-isystem>$<JOIN:$<TARGET_PROPERTY:cxx-headers,INTERFACE_INCLUDE_DIRECTORIES>,$<SEMICOLON>$<IF:$<BOOL:${MSVC}>,/imsvc,-isystem>>>")
+  set(COMPILER_RT_CXX_CFLAGS "$<$<TARGET_EXISTS:cxx-headers>:${COMPILER_RT_CXX_SYSTEM_INCLUDE_FLAG}$<JOIN:$<TARGET_PROPERTY:cxx-headers,INTERFACE_INCLUDE_DIRECTORIES>,$<SEMICOLON>${COMPILER_RT_CXX_SYSTEM_INCLUDE_FLAG}>>")
   if (COMPILER_RT_STATIC_CXX_LIBRARY)
     set(COMPILER_RT_CXX_LINK_LIBS "$<TARGET_LINKER_FILE:cxx_static>")
   else()
@@ -755,7 +764,7 @@ endif()
 
 if (SANITIZER_TEST_CXX_LIBNAME STREQUAL "libc++")
   if (SANITIZER_TEST_CXX_INTREE)
-    list(APPEND SANITIZER_TEST_CXX_CFLAGS "$<$<TARGET_EXISTS:cxx-headers>:$<IF:$<BOOL:${MSVC}>,/imsvc,-isystem>$<JOIN:$<TARGET_PROPERTY:cxx-headers,INTERFACE_INCLUDE_DIRECTORIES>,$<SEMICOLON>$<IF:$<BOOL:${MSVC}>,/imsvc,-isystem>>>")
+    list(APPEND SANITIZER_TEST_CXX_CFLAGS "$<$<TARGET_EXISTS:cxx-headers>:${COMPILER_RT_CXX_SYSTEM_INCLUDE_FLAG}$<JOIN:$<TARGET_PROPERTY:cxx-headers,INTERFACE_INCLUDE_DIRECTORIES>,$<SEMICOLON>${COMPILER_RT_CXX_SYSTEM_INCLUDE_FLAG}>>")
     if (SANITIZER_USE_STATIC_TEST_CXX)
       list(APPEND SANITIZER_TEST_CXX_LIBRARIES "$<TARGET_LINKER_FILE:cxx_static>")
     else()
