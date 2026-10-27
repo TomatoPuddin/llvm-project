@@ -293,6 +293,11 @@ struct __declspec(empty_bases) X : A, D, B, C, E {
 };
 
 // CHECK: *** Dumping AST Record Layout
+// CHECK-NEXT:          0 | struct test5::C (empty)
+// CHECK-NEXT:            | [sizeof=1, align=1,
+// CHECK-NEXT:            |  nvsize=0, nvalign=1]
+
+// CHECK: *** Dumping AST Record Layout
 // CHECK-NEXT:          0 | struct test5::A
 // CHECK-NEXT:          0 |   int a
 // CHECK-NEXT:            | [sizeof=4, align=4,
@@ -310,15 +315,10 @@ struct __declspec(empty_bases) X : A, D, B, C, E {
 // CHECK-NEXT:            |  nvsize=4, nvalign=4]
 
 // CHECK: *** Dumping AST Record Layout
-// CHECK-NEXT:          0 | struct test5::C (empty)
-// CHECK-NEXT:            | [sizeof=1, align=1,
-// CHECK-NEXT:            |  nvsize=0, nvalign=1]
-
-// CHECK: *** Dumping AST Record Layout
 // CHECK-NEXT:          0 | struct test5::E (empty)
 // CHECK-NEXT:          0 |   struct test5::C c (empty)
 // CHECK-NEXT:            | [sizeof=1, align=1,
-// CHECK-NEXT:            |  nvsize=1, nvalign=1]
+// CHECK-NEXT:            |  nvsize=0, nvalign=1]
 
 // CHECK: *** Dumping AST Record Layout
 // CHECK-NEXT:          0 | struct test5::X
@@ -326,10 +326,10 @@ struct __declspec(empty_bases) X : A, D, B, C, E {
 // CHECK-NEXT:          0 |     int a
 // CHECK-NEXT:          0 |   struct test5::D (base) (empty)
 // CHECK-NEXT:          0 |   struct test5::C (base) (empty)
+// CHECK-NEXT:          0 |   struct test5::E (base) (empty)
+// CHECK-NEXT:          0 |     struct test5::C c (empty)
 // CHECK-NEXT:          4 |   struct test5::B (base)
 // CHECK-NEXT:          4 |     int b
-// CHECK-NEXT:          8 |   struct test5::E (base) (empty)
-// CHECK-NEXT:          8 |     struct test5::C c (empty)
 // CHECK-NEXT:            | [sizeof=16, align=16,
 // CHECK-NEXT:            |  nvsize=16, nvalign=16]
 

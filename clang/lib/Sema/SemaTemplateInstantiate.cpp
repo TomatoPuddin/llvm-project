@@ -4183,6 +4183,21 @@ bool Sema::InstantiateClassTemplateSpecialization(
   if (!Pattern.isUsable())
     return Pattern.isInvalid();
 
+  // MSVC applies the primary template's empty_bases attribute to partial
+  // specializations, but not to explicit specializations.
+  if (const auto *Partial =
+          dyn_cast<ClassTemplatePartialSpecializationDecl>(Pattern.get());
+      Partial && !Partial->hasAttr<EmptyBasesAttr>() &&
+      !ClassTemplateSpec->hasAttr<EmptyBasesAttr>()) {
+    if (const auto *A = Partial->getSpecializedTemplate()
+                            ->getTemplatedDecl()
+                            ->getAttr<EmptyBasesAttr>()) {
+      auto *Inherited = A->clone(Context);
+      Inherited->setInherited(true);
+      ClassTemplateSpec->addAttr(Inherited);
+    }
+  }
+
   bool Err = InstantiateClassImpl(
       PointOfInstantiation, ClassTemplateSpec, Pattern.get(),
       getTemplateInstantiationArgs(ClassTemplateSpec), TSK, Complain);

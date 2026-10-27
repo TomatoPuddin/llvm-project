@@ -19,6 +19,7 @@
 #include "clang/Basic/TargetInfo.h"
 #include "llvm/Support/Format.h"
 #include "llvm/Support/MathExtras.h"
+#include <optional>
 
 using namespace clang;
 
@@ -157,10 +158,11 @@ protected:
   bool CanPlaceFieldSubobjectAtOffset(const CXXRecordDecl *RD,
                                       const CXXRecordDecl *Class,
                                       CharUnits Offset) const;
-  bool CanPlaceFieldSubobjectAtOffset(const FieldDecl *FD,
-                                      CharUnits Offset) const;
 
 public:
+  bool CanPlaceFieldSubobjectAtOffset(const FieldDecl *FD,
+                                     CharUnits Offset) const;
+
   /// This holds the size of the largest empty subobject (either a base
   /// or a member). Will be zero if the record being built doesn't contain
   /// any empty classes.
@@ -181,6 +183,13 @@ public:
   /// CanPlaceFieldAtOffset - Return whether a field can be placed at the given
   /// offset.
   bool CanPlaceFieldAtOffset(const FieldDecl *FD, CharUnits Offset);
+
+  // MS layout permits overlapping empty bases, but no_unique_address fields
+  // must still avoid empty subobjects of the same type in those bases.
+  void UpdateEmptyBaseSubobjects(const CXXRecordDecl *RD, CharUnits Offset) {
+    UpdateEmptyFieldSubobjects(RD, /*Class=*/nullptr, Offset,
+                               /*PlacingOverlappingField=*/RD->isEmpty());
+  }
 };
 
 void EmptySubobjectMap::ComputeEmptySubobjectSizes() {
@@ -2576,7 +2585,7 @@ public:
   /// Lays out the fields of the record.  Also rounds size up to
   /// alignment.
   void layoutFields(const RecordDecl *RD);
-  void layoutField(const FieldDecl *FD);
+  void layoutField(const FieldDecl *FD, const EmptySubobjectMap *EmptyBases);
   void layoutBitField(const FieldDecl *FD);
   /// Lays out a single zero-width bit-field in the record and handles
   /// special cases associated with zero-width bit-fields.
@@ -2744,6 +2753,14 @@ void MicrosoftRecordLayoutBuilder::cxxLayout(const CXXRecordDecl *RD) {
   initializeCXXLayout(RD);
   layoutNonVirtualBases(RD);
   layoutFields(RD);
+  // MSVC treats a record containing only overlapping empty members at offset
+  // zero as a zero-sized base. Keep the complete-object byte out of nvsize,
+  // but preserve storage required by repeated members, alignment, or bitfields.
+  if (!UseExternalLayout && RD->isEmpty() && Size == CharUnits::One() &&
+      Alignment == CharUnits::One() && DataSize.isZero() && RD->bases().empty() &&
+      llvm::none_of(RD->fields(),
+                    [](const FieldDecl *FD) { return FD->isBitField(); }))
+    Size = CharUnits::Zero();
   injectVBPtr(RD);
   injectVFPtr(RD);
   if (HasOwnVFPtr || (HasVBPtr && !SharedVBPtrBase))
@@ -2962,12 +2979,23 @@ void MicrosoftRecordLayoutBuilder::layoutNonVirtualBase(
 }
 
 void MicrosoftRecordLayoutBuilder::layoutFields(const RecordDecl *RD) {
+  std::optional<EmptySubobjectMap> EmptyBases;
+  if (const auto *CXXRD = dyn_cast<CXXRecordDecl>(RD);
+      CXXRD && !CXXRD->bases().empty() &&
+      llvm::any_of(RD->fields(), [](const FieldDecl *FD) {
+        return FD->isPotentiallyOverlapping();
+      })) {
+    EmptyBases.emplace(Context, CXXRD);
+    for (const auto &Base : Bases)
+      EmptyBases->UpdateEmptyBaseSubobjects(Base.first, Base.second);
+  }
   LastFieldIsNonZeroWidthBitfield = false;
   for (const FieldDecl *Field : RD->fields())
-    layoutField(Field);
+    layoutField(Field, EmptyBases ? &*EmptyBases : nullptr);
 }
 
-void MicrosoftRecordLayoutBuilder::layoutField(const FieldDecl *FD) {
+void MicrosoftRecordLayoutBuilder::layoutField(
+    const FieldDecl *FD, const EmptySubobjectMap *EmptyBases) {
   if (FD->isBitField()) {
     layoutBitField(FD);
     return;
@@ -2976,10 +3004,7 @@ void MicrosoftRecordLayoutBuilder::layoutField(const FieldDecl *FD) {
   ElementInfo Info = getAdjustedElementInfo(FD);
   Alignment = std::max(Alignment, Info.Alignment);
 
-  const CXXRecordDecl *FieldClass = FD->getType()->getAsCXXRecordDecl();
-  bool IsOverlappingEmptyField = FD->isPotentiallyOverlapping() &&
-                                 FieldClass->isEmpty() &&
-                                 FieldClass->fields().empty();
+  bool IsOverlappingEmptyField = FD->isZeroSize(Context);
   CharUnits FieldOffset = CharUnits::Zero();
 
   if (UseExternalLayout) {
@@ -2991,7 +3016,11 @@ void MicrosoftRecordLayoutBuilder::layoutField(const FieldDecl *FD) {
     if (!IsOverlappingEmptyField)
       FieldOffset = DataSize.alignTo(Info.Alignment);
 
-    while (!EmptySubobjects->CanPlaceFieldAtOffset(FD, FieldOffset)) {
+    // MSVC only checks base subobjects for no_unique_address fields. Ordinary
+    // fields retain the legacy MS layout even when they alias an empty base.
+    while ((EmptyBases && FD->isPotentiallyOverlapping() &&
+            !EmptyBases->CanPlaceFieldSubobjectAtOffset(FD, FieldOffset)) ||
+           !EmptySubobjects->CanPlaceFieldAtOffset(FD, FieldOffset)) {
       const CXXRecordDecl *ParentClass = cast<CXXRecordDecl>(FD->getParent());
       bool HasBases = ParentClass && (!ParentClass->bases().empty() ||
                                       !ParentClass->vbases().empty());

@@ -4791,14 +4791,12 @@ bool FieldDecl::isZeroSize(const ASTContext &Ctx) const {
 
   // Otherwise, [...] the circumstances under which the object has zero size
   // are implementation-defined.
-  if (!Ctx.getTargetInfo().getCXXABI().isMicrosoft())
+  if (!Ctx.getTargetInfo().hasMicrosoftRecordLayout())
     return true;
 
-  // MS ABI: has nonzero size if it is a class type with class type fields,
-  // whether or not they have nonzero size
-  return !llvm::any_of(CXXRD->fields(), [](const FieldDecl *Field) {
-    return Field->getType()->isRecordType();
-  });
+  // MS ABI uses the base-subobject size for empty overlapping members. An
+  // empty class can still require storage for distinct subobjects or alignment.
+  return Ctx.getASTRecordLayout(CXXRD).getNonVirtualSize().isZero();
 }
 
 bool FieldDecl::isPotentiallyOverlapping() const {

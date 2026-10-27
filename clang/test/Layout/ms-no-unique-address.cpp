@@ -39,15 +39,15 @@ namespace Empty {
     [[msvc::no_unique_address]] A3 a;
     int i;
   };
-  static_assert(sizeof(D) == 8);
+  static_assert(sizeof(D) == 4);
 
   // CHECK:*** Dumping AST Record Layout
   // CHECK:          0 | struct Empty::D
   // CHECK-NEXT:     0 |   struct Empty::A3 a (empty)
   // CHECK-NEXT:     0 |     struct Empty::A a (empty)
-  // CHECK-NEXT:     4 |   int i
-  // CHECK-NEXT:       | [sizeof=8, align=4,
-  // CHECK-NEXT:       |  nvsize=8, nvalign=4]
+  // CHECK-NEXT:     0 |   int i
+  // CHECK-NEXT:       | [sizeof=4, align=4,
+  // CHECK-NEXT:       |  nvsize=4, nvalign=4]
 
   struct E {
     [[msvc::no_unique_address]] A a1;
@@ -87,7 +87,7 @@ namespace Empty {
   // CHECK:          0 | struct Empty::G
   // CHECK-NEXT:     0 |   struct Empty::A a (empty)
   // CHECK-NEXT:       | [sizeof=1, align=1,
-  // CHECK-NEXT:       |  nvsize=1, nvalign=1]
+  // CHECK-NEXT:       |  nvsize=0, nvalign=1]
 
   struct H {
     [[msvc::no_unique_address]] A a;
@@ -149,27 +149,27 @@ namespace Empty {
     ~OversizedEmpty();
     [[msvc::no_unique_address]] A a;
   };
-  static_assert(sizeof(OversizedEmpty) == 1);
+  static_assert(sizeof(OversizedEmpty) == 2);
 
   // CHECK:*** Dumping AST Record Layout
   // CHECK:          0 | struct Empty::OversizedEmpty
   // CHECK-NEXT:     0 |   struct Empty::A (base) (empty)
-  // CHECK-NEXT:     0 |   struct Empty::A a (empty)
-  // CHECK-NEXT:       | [sizeof=1, align=1,
-  // CHECK-NEXT:       |  nvsize=1, nvalign=1]
+  // CHECK-NEXT:     1 |   struct Empty::A a (empty)
+  // CHECK-NEXT:       | [sizeof=2, align=1,
+  // CHECK-NEXT:       |  nvsize=2, nvalign=1]
 
   struct HasOversizedEmpty {
     [[msvc::no_unique_address]] OversizedEmpty m;
   };
-  static_assert(sizeof(HasOversizedEmpty) == 1);
+  static_assert(sizeof(HasOversizedEmpty) == 2);
 
   // CHECK:*** Dumping AST Record Layout
   // CHECK:          0 | struct Empty::HasOversizedEmpty
   // CHECK-NEXT:     0 |   struct Empty::OversizedEmpty m (empty)
   // CHECK-NEXT:     0 |     struct Empty::A (base) (empty)
-  // CHECK-NEXT:     0 |     struct Empty::A a (empty)
-  // CHECK-NEXT:       | [sizeof=1, align=1,
-  // CHECK-NEXT:       |  nvsize=1, nvalign=1]
+  // CHECK-NEXT:     1 |     struct Empty::A a (empty)
+  // CHECK-NEXT:       | [sizeof=2, align=1,
+  // CHECK-NEXT:       |  nvsize=2, nvalign=1]
 
   struct EmptyWithNonzeroDSize {
     [[msvc::no_unique_address]] A a;
@@ -360,23 +360,21 @@ namespace ZeroSize {
   };
   static_assert(sizeof(union_of_empty_container) == 1);
   // CHECK:*** Dumping AST Record Layout
-  // CHECK:         0 | struct ZeroSize::union_of_empty_container
-  // CHECK-NOT: (empty)
+  // CHECK:         0 | struct ZeroSize::union_of_empty_container (empty)
   // CHECK:         0 |   union ZeroSize::union_of_empty x (empty)
   // CHECK:         0 |     struct ZeroSize::empty x (empty)
   // CHECK:           | [sizeof=1, align=1,
-  // CHECK:           |  nvsize=1, nvalign=1] 
+  // CHECK:           |  nvsize=0, nvalign=1]
 
   struct struct_of_empty_container {
     [[msvc::no_unique_address]] struct_of_empty x;
   }; 
   static_assert(sizeof(struct_of_empty_container) == 1);
   // CHECK:*** Dumping AST Record Layout
-  // CHECK:         0 | struct ZeroSize::struct_of_empty_container
-  // CHECK-NOT: (empty)
+  // CHECK:         0 | struct ZeroSize::struct_of_empty_container (empty)
   // CHECK:         0 |   struct ZeroSize::struct_of_empty x (empty)
   // CHECK:         0 |     struct ZeroSize::empty x (empty)
   // CHECK:           | [sizeof=1, align=1,
-  // CHECK:           |  nvsize=1, nvalign=1] 
+  // CHECK:           |  nvsize=0, nvalign=1]
 
 }
