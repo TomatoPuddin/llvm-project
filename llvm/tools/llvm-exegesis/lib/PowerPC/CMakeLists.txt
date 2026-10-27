@@ -14,7 +14,6 @@ set(LLVM_LINK_COMPONENTS
   )
 
 add_llvm_library(LLVMExegesisPowerPC
-  DISABLE_LLVM_LINK_LLVM_DYLIB
   STATIC
   Target.cpp
 

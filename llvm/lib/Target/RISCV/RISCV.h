@@ -80,16 +80,16 @@ void initializeRISCVPreRAExpandPseudoPass(PassRegistry &);
 FunctionPass *createRISCVExpandAtomicPseudoPass();
 void initializeRISCVExpandAtomicPseudoPass(PassRegistry &);
 
-FunctionPass *createRISCVInsertVSETVLIPass();
+LLVM_ABI FunctionPass *createRISCVInsertVSETVLIPass();
 void initializeRISCVInsertVSETVLIPass(PassRegistry &);
 extern char &RISCVInsertVSETVLIID;
 
-FunctionPass *createRISCVPostRAExpandPseudoPass();
+LLVM_ABI FunctionPass *createRISCVPostRAExpandPseudoPass();
 void initializeRISCVPostRAExpandPseudoPass(PassRegistry &);
-FunctionPass *createRISCVInsertReadWriteCSRPass();
+LLVM_ABI FunctionPass *createRISCVInsertReadWriteCSRPass();
 void initializeRISCVInsertReadWriteCSRPass(PassRegistry &);
 
-FunctionPass *createRISCVInsertWriteVXRMPass();
+LLVM_ABI FunctionPass *createRISCVInsertWriteVXRMPass();
 void initializeRISCVInsertWriteVXRMPass(PassRegistry &);
 
 FunctionPass *createRISCVRedundantCopyEliminationPass();

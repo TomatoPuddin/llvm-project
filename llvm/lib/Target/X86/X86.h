@@ -73,7 +73,7 @@ public:
                         MachineFunctionAnalysisManager &MFAM);
 };
 
-FunctionPass *createX86FPStackifierLegacyPass();
+LLVM_ABI FunctionPass *createX86FPStackifierLegacyPass();
 
 /// This pass inserts AVX vzeroupper instructions before each call to avoid
 /// transition penalty between functions encoded with AVX and SSE.

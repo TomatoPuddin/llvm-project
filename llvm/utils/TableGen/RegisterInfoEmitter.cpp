@@ -1156,7 +1156,7 @@ void RegisterInfoEmitter::runMCDesc(raw_ostream &OS, raw_ostream &MainOS,
       << Totals.SuperClassIdx << ">";
   OS << "using " << TargetName
      << "RegisterClassStorage = " << MCRegisterClassStorageType << ";\n";
-  OS << "extern const " << MCRegisterClassStorageType << " " << TargetName
+  OS << "extern LLVM_ABI const " << MCRegisterClassStorageType << " " << TargetName
      << "MCRegisterClassStorage = {\n"
      << "  {\n";
 
@@ -1358,7 +1358,7 @@ void RegisterInfoEmitter::runTargetHeader(raw_ostream &OS, raw_ostream &MainOS,
 
   OS << "class " << TargetName << "FrameLowering;\n\n";
 
-  OS << "extern const " << MCRegisterClassStorageType << " " << TargetName
+  OS << "extern LLVM_ABI const " << MCRegisterClassStorageType << " " << TargetName
      << "MCRegisterClassStorage;\n\n";
 
   OS << "struct " << ClassName << " : public TargetRegisterInfo {\n"
@@ -1428,12 +1428,23 @@ void RegisterInfoEmitter::runTargetHeader(raw_ostream &OS, raw_ostream &MainOS,
     NamespaceEmitter RegClassNS(OS, RegisterClasses.front().Namespace);
     OS << "// Register classes\n";
 
+    // DLL-imported data addresses cannot initialize constexpr references.
+    OS << "#if defined(_WIN32) && !defined(__MINGW32__) && "
+          "defined(LLVM_ENABLE_LLVM_EXPORT_ANNOTATIONS) && "
+          "!defined(LLVM_BUILD_STATIC) && !defined(LLVM_EXPORTS)\n"
+          "#define LLVM_REGINFO_CONSTEXPR\n"
+          "#else\n"
+          "#define LLVM_REGINFO_CONSTEXPR constexpr\n"
+          "#endif\n";
+
     for (const auto &RC : RegisterClasses) {
       // Output the extern for the instance.
-      OS << "static constexpr const TargetRegisterClass &" << RC.getName()
+      OS << "static LLVM_REGINFO_CONSTEXPR const TargetRegisterClass &"
+         << RC.getName()
          << "RegClass = " << TargetName << "MCRegisterClassStorage.Classes["
          << RC.EnumValue << "];\n";
     }
+    OS << "#undef LLVM_REGINFO_CONSTEXPR\n";
   }
 }
 
@@ -1450,7 +1461,7 @@ void RegisterInfoEmitter::runTargetDesc(raw_ostream &OS, raw_ostream &MainOS,
   NamespaceEmitter LlvmNS(OS, "llvm");
 
   // Get access to MCRegisterClass data.
-  OS << "extern const " << MCRegisterClassStorageType << " " << Target.getName()
+  OS << "extern LLVM_ABI const " << MCRegisterClassStorageType << " " << Target.getName()
      << "MCRegisterClassStorage;\n";
 
   // Start out by emitting each of the register classes.

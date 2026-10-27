@@ -50,7 +50,6 @@ if(HAVE_LIBRT)
 endif()
 
 add_llvm_library(LLVMExegesis
-  DISABLE_LLVM_LINK_LLVM_DYLIB
   STATIC
   Analysis.cpp
   Assembler.cpp

@@ -54,7 +54,7 @@ FunctionPass *createAArch64AdvSIMDScalar();
 FunctionPass *createAArch64ISelDag(AArch64TargetMachine &TM,
                                    CodeGenOptLevel OptLevel);
 FunctionPass *createAArch64StorePairSuppressPass();
-FunctionPass *createAArch64ExpandPseudoLegacyPass();
+LLVM_ABI FunctionPass *createAArch64ExpandPseudoLegacyPass();
 FunctionPass *createAArch64SLSHardeningLegacyPass();
 FunctionPass *createAArch64SpeculationHardeningPass();
 FunctionPass *createAArch64LoadStoreOptLegacyPass();

@@ -19,7 +19,6 @@ foreach(t ${LLVM_EXEGESIS_TARGETS})
 endforeach()
 
 add_llvm_tool(llvm-exegesis
-  DISABLE_LLVM_LINK_LLVM_DYLIB
   llvm-exegesis.cpp
 
   DEPENDS
