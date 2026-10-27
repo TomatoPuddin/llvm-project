@@ -47,6 +47,8 @@ set(LLVM_DEFAULT_RUNTIMES "libc;libunwind;libcxxabi;libcxx;compiler-rt;libclc;op
 set(LLVM_SUPPORTED_RUNTIMES "libc;libunwind;libcxxabi;libcxx;compiler-rt;libclc;openmp;flang-rt;offload;llvm-libgcc;libsycl;orc-rt")
 set(LLVM_ENABLE_RUNTIMES "" CACHE STRING
   "Semicolon-separated list of runtimes to build, or \"all\" (${LLVM_DEFAULT_RUNTIMES}). Supported runtimes are ${LLVM_SUPPORTED_RUNTIMES}.")
+option(RUNTIMES_ENABLE_WHOLE_PROGRAM_VTABLES
+  "Enable whole-program vtables for runtime C++ sources compiled with LTO." OFF)
 if(LLVM_ENABLE_RUNTIMES STREQUAL "all" )
   set(LLVM_ENABLE_RUNTIMES ${LLVM_DEFAULT_RUNTIMES})
 endif()
@@ -225,6 +227,9 @@ set(LLVM_COMPILER_CHECKED ON)
 # Handle common options used by all runtimes.
 include(AddLLVM)
 include(HandleLLVMOptions)
+if(RUNTIMES_ENABLE_WHOLE_PROGRAM_VTABLES)
+  include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/HandleWholeProgramVTables.cmake")
+endif()
 
 # Loot at the PATH first to avoid a version mismatch between the command-line
 # python and the CMake-found version
@@ -411,6 +416,11 @@ foreach(entry ${runtimes})
 
   add_subdirectory(${entry} ${projName})
 endforeach()
+
+if(RUNTIMES_ENABLE_WHOLE_PROGRAM_VTABLES)
+  # Runtime targets can override the global LTO setting, so apply this last.
+  runtimes_enable_whole_program_vtables("${CMAKE_CURRENT_SOURCE_DIR}")
+endif()
 
 # Define runtimes-test-depends so the parent build can use it unconditionally.
 add_custom_target(runtimes-test-depends)

@@ -453,6 +453,10 @@ function(runtime_register_target name)
   string(REPLACE ";" "|" LLVM_ENABLE_RUNTIMES_PASSTHROUGH "${LLVM_ENABLE_RUNTIMES}")
   list(APPEND ${name}_extra_args -DLLVM_ENABLE_RUNTIMES=${LLVM_ENABLE_RUNTIMES_PASSTHROUGH})
   list(APPEND ${name}_extra_args -DLLVM_USE_LINKER=${LLVM_USE_LINKER})
+  if(DEFINED RUNTIMES_ENABLE_WHOLE_PROGRAM_VTABLES)
+    list(APPEND ${name}_extra_args
+      -DRUNTIMES_ENABLE_WHOLE_PROGRAM_VTABLES=${RUNTIMES_ENABLE_WHOLE_PROGRAM_VTABLES})
+  endif()
   append_passthrough_options(${name}_extra_args RUNTIMES "${ARG_BASE_NAME};${name}")
 
   set_enable_per_target_runtime_dir()
